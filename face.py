@@ -77,6 +77,9 @@ def recog(vpict):
 			r[CROP_HEIGHT] = str(h)
 		lastw = w
 		
+	if (len(r) > 0):
+		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
+		cv2.imwrite('/tmp/crop.jpg',imgCrop)
 	return r	
 	
 def convert2Json (dbtext):
