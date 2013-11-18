@@ -1,0 +1,7 @@
+li
+{
+display:inline;
+}
+tr:not(:first-child):hover {
+    background-color: rgba(255,0,0,.3);
+}

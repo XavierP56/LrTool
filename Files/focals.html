@@ -1,0 +1,33 @@
+<div>
+	<select ng-model="mycam" ng-options="c.name for c in cameras" ng-change="get_pub()"></select>
+	<label>    </label>
+	<select ng-model="graphStyle" ng-change="get_pub()">
+	<option value="PieChart">Pie Chart</option>
+	<option value="ColumnChart">Bar Chart</option>
+	</select>
+	<br/>
+	<br/>
+		 <label>Min focal:</label>
+		 <input type="text" ng-model="minFoc">
+		 <label>Max focal:</label>
+     	 <input type="text" ng-model="maxFoc">
+     	 <label>Increment:</label>
+     	 <input type="text" ng-model="pas">
+     	 <button ng-click="get_pub()">Analyze</button>
+     <br/><br/>
+  	Total number of images:{{chart.totalCount}}<br/>
+   	<label>Number of images in range :{{chart.rangeCount}}</label><br><br>Last 4 selections (click to go there):
+   	<table>
+   	<tr><td>Min</td><td>Max</td><td>Increment</td></tr>
+   	<tr ng-repeat="e in lastentries" ng-click="back(e)">
+   		<td>{{e.min}}</td>
+   		<td>{{e.max}}</td>
+   		<td>{{e.pas}}</td>
+   	</tr>
+   	</table>
+  
+  	<div google-chart chart="chart" style="{{chart.cssStyle}}" select="zoom(selectedItem.row)"/>
+  	<br/>
+</div>
+
+

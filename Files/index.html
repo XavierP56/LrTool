@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<body>
+    <div class="container">
+        <h4>
+            Lightroom Tools.
+        </h4>
+        <div class="row">
+            <ul class="nav nav-pills">
+                <li><a href="#/Intro">Intro</a></li>
+                <li><a href="#/Focales">Focals</a></li>
+                <li><a href="#/Collections">Collections</a></li>
+            </ul>
+
+        </div>
+    <div ui-view></div>
+    </div>
+    
+    <link rel="stylesheet" href="/demo/css/lrtools.css">
+    <script src="/demo/bower_components/angular/angular.js"></script>
+	<script src="/demo/bower_components/angular-resource/angular-resource.js"></script>
+	<script src="/demo/bower_components/angular-google-chart/ng-google-chart.js"></script>
+	<script src="/demo/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="/demo/js/demo.js"></script>
+</body>
