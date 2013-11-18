@@ -18,6 +18,8 @@ CROP_TOP = 'CropTop'
 CROP_WIDTH = 'CropWidth'
 CROP_HEIGHT = 'CropHeight'
 
+index = 0
+
 def Raw2Jpg (filepath):
 	dcraw_opts = ["/usr/local/bin/dcraw", "-e", "-c", filepath]
 	dcraw_proc = Popen(dcraw_opts, stdout=PIPE)
@@ -33,6 +35,8 @@ def rotateImage(image, angle):
   return result
  	
 def recog(vpict):
+	global index
+	
 	fullName = vpict['fullName']
 	Raw2Jpg(fullName)
 	imgf = cv2.imread('/tmp/lr.jpg',cv2.IMREAD_GRAYSCALE)
@@ -79,7 +83,9 @@ def recog(vpict):
 		
 	if (len(r) > 0):
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
-		cv2.imwrite('/tmp/crop.jpg',imgCrop)
+		name = '/tmp/crop'+str(index)+'.jpg'
+		cv2.imwrite(name,imgCrop)
+		index += 1
 	return r	
 	
 def convert2Json (dbtext):
