@@ -129,12 +129,13 @@ this.FocalCtrl = function($scope, $http, $q, $resource) {
 };
 
 this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
-  var Collections, Images, Process, index, total;
+  var Collections, Images, Process, errors, index, total;
   Collections = $resource('/collections/getlist');
   Images = $resource('/collections/getImages/:colId');
   Process = $resource('/collections/processImage');
   total = 0;
   index = 0;
+  errors = [];
   ProgressService.setCallback(function(res) {
     return $scope.currentProgress = res;
   });
@@ -153,6 +154,7 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       $scope.imgList = images.imgs;
       index = 0;
       total = $scope.imgList.length;
+      errors = [];
       return $scope.CropAgain();
     });
   };
@@ -164,18 +166,23 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       'text': vpict.fullName,
       'index': index,
       'maxi': total,
-      'end': false
+      'end': false,
+      'errors': errors
     };
     return res = Process.get({
       'img': vpict
     }, function() {
+      if (res.result === false) {
+        errors.push(vpict.fullName);
+      }
       if ($scope.imgList.length > 0) {
         $scope.CropAgain();
       }
       if ($scope.imgList.length === 0) {
         return $scope.currentProgress = {
           'text': 'Done',
-          'end': true
+          'end': true,
+          'errors': errors
         };
       }
     });

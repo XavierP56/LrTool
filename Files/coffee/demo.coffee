@@ -91,6 +91,7 @@ app.factory 'ProgressService', ($resource) ->
 	Process = $resource('/collections/processImage')
 	total = 0
 	index = 0
+	errors = []
 	
 	ProgressService.setCallback( (res) -> $scope.currentProgress = res  )
 	$scope.currentProgress = ProgressService.getLastStatus()
@@ -106,12 +107,14 @@ app.factory 'ProgressService', ($resource) ->
 			$scope.imgList = images.imgs
 			index = 0
 			total = $scope.imgList.length
+			errors = []
 			$scope.CropAgain()
 			
 	$scope.CropAgain = () ->
 		vpict = $scope.imgList.shift()
 		index += 1
-		$scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false}
+		$scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
 		res = Process.get {'img':vpict}, ->
+			errors.push(vpict.fullName) if res.result == false
 			$scope.CropAgain() if $scope.imgList.length > 0
-			$scope.currentProgress = {'text':'Done', 'end':true} if $scope.imgList.length == 0
+			$scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
