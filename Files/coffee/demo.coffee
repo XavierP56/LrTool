@@ -24,14 +24,7 @@ app.directive 'progressIndicator', ->
 	link : (scope,element,attrs) ->
 		scope.$watch 'progress', (v)->
 			scope.curPrg = v
-	template :  'In progress: {{curPrg.text}} ' +
-				'<div class="ng-hide" ng-hide=curPrg.end>' +
-  				'<progress  value={{curPrg.index}} max={{curPrg.maxi}}></progress>' +
-  				'</div>' + 
-  				'<br/>' +
-  				'<li ng-repeat="e in curPrg.errors">' +
-  				'Error on {{e}}' +
-  				'</li>'
+	templateUrl : '/demo/progress.html'
   				    
 # Progress service.
 app.factory 'ProgressService', ($resource) ->
@@ -95,7 +88,9 @@ app.factory 'ProgressService', ($resource) ->
 @CollectionCtrl = ($scope, $http, $q, $resource, ProgressService)->
 	Collections = $resource('/collections/getlist')
 	Images = $resource('/collections/getImages/:colId')
-	Progress = $resource('/collections/getProgress')
+	Process = $resource('/collections/processImage')
+	total = 0
+	index = 0
 	
 	ProgressService.setCallback( (res) -> $scope.currentProgress = res  )
 	$scope.currentProgress = ProgressService.getLastStatus()
@@ -107,6 +102,16 @@ app.factory 'ProgressService', ($resource) ->
 		ProgressService.GetState()
 		
 	$scope.Process = (id) ->
-		ProgressService.getProgress()
 		images = Images.get {colId:id}, ->
-			$scope.imgList = images
+			$scope.imgList = images.imgs
+			index = 0
+			total = $scope.imgList.length
+			$scope.CropAgain()
+			
+	$scope.CropAgain = () ->
+		vpict = $scope.imgList.shift()
+		index += 1
+		$scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false}
+		res = Process.get {'img':vpict}, ->
+			$scope.CropAgain() if $scope.imgList.length > 0
+			$scope.currentProgress = {'text':'Done', 'end':true} if $scope.imgList.length == 0

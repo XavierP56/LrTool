@@ -31,7 +31,7 @@ app.directive('progressIndicator', function() {
         return scope.curPrg = v;
       });
     },
-    template: 'In progress: {{curPrg.text}} ' + '<div class="ng-hide" ng-hide=curPrg.end>' + '<progress  value={{curPrg.index}} max={{curPrg.maxi}}></progress>' + '</div>' + '<br/>' + '<li ng-repeat="e in curPrg.errors">' + 'Error on {{e}}' + '</li>'
+    templateUrl: '/demo/progress.html'
   };
 });
 
@@ -129,10 +129,12 @@ this.FocalCtrl = function($scope, $http, $q, $resource) {
 };
 
 this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
-  var Collections, Images, Progress;
+  var Collections, Images, Process, index, total;
   Collections = $resource('/collections/getlist');
   Images = $resource('/collections/getImages/:colId');
-  Progress = $resource('/collections/getProgress');
+  Process = $resource('/collections/processImage');
+  total = 0;
+  index = 0;
   ProgressService.setCallback(function(res) {
     return $scope.currentProgress = res;
   });
@@ -143,13 +145,39 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
   $scope.isWorking = function() {
     return ProgressService.GetState();
   };
-  return $scope.Process = function(id) {
+  $scope.Process = function(id) {
     var images;
-    ProgressService.getProgress();
     return images = Images.get({
       colId: id
     }, function() {
-      return $scope.imgList = images;
+      $scope.imgList = images.imgs;
+      index = 0;
+      total = $scope.imgList.length;
+      return $scope.CropAgain();
+    });
+  };
+  return $scope.CropAgain = function() {
+    var res, vpict;
+    vpict = $scope.imgList.shift();
+    index += 1;
+    $scope.currentProgress = {
+      'text': vpict.fullName,
+      'index': index,
+      'maxi': total,
+      'end': false
+    };
+    return res = Process.get({
+      'img': vpict
+    }, function() {
+      if ($scope.imgList.length > 0) {
+        $scope.CropAgain();
+      }
+      if ($scope.imgList.length === 0) {
+        return $scope.currentProgress = {
+          'text': 'Done',
+          'end': true
+        };
+      }
     });
   };
 };

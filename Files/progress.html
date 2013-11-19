@@ -1,0 +1,8 @@
+In progress: <b>{{curPrg.text}}</b> 
+<div class="ng-hide" ng-hide=curPrg.end>
+<progress  value={{curPrg.index}} max={{curPrg.maxi}}></progress>
+</div> 
+<br/> 
+<li ng-repeat="e in curPrg.errors">
+Error on {{e}} 
+</li>

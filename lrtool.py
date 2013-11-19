@@ -105,20 +105,6 @@ def getcollectionList(db):
 	resultq =  db.execute(query).fetchall()
 	res = [{"id": e[0], "name": e[1]} for e in resultq]	
 	return {'colls': res}
-
-@app.route('/collections/getProgress', method='GET')
-def getProgress(db):
-	global progress_queue
-	evt = progress_queue.get(True, None)
-	return evt
-	
-def setProgress(infos):
-	global progress_queue
-	progress_queue.put(infos,timeout=None)
-
-def setProgressText(text,ix, maxi, end = False,errors=[]):
-	info = {'text':text, 'end':end, 'index':ix, 'maxi':maxi, 'errors':errors}
-	setProgress(info)
 		
 @app.route('/collections/getImages/<colid>', method='GET')
 def getcollection(db,colid):
@@ -133,18 +119,19 @@ def getcollection(db,colid):
 	
 		resultq =  db.execute(query,{"colId": colid}).fetchall()
 		res = [{"id_local": e[0], "developSettingsIDCache": e[1], "fullName": e[2], "orientation" : e[3]} for e in resultq]	
-		ix = 0
-		errlist = []
-		for vpict in res:
-			setProgressText ("Processing " + vpict['fullName'],ix, len(res),errors=errlist)
-			if not face.crop (db, vpict):
-				errlist.append(vpict['fullName'])
-			ix += 1
-		setProgressText("Done !", len(res), len(res), True,errors=errlist)
-		return {'imgs' : res}
+		return {'imgs':res}
 	except:
-		setProgressText("Failure !", 0, 0, True, errors=errlist)
-		return {'imgs' : []}
+		return []
+	
+@app.route('/collections/processImage', method='GET')	
+def processImage(db):
+	data = request.query.get('img')
+	vpict = json.loads(data)
+	if not face.crop (db, vpict):
+		return {'result':False}
+	else:
+		return {'result' : True}
+
 
 progress_queue = Queue.Queue(0)	
 bottle.run(app, host='localhost', port=8080, server='cherrypy')
