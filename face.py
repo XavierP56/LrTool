@@ -83,7 +83,8 @@ def recog(vpict):
 		
 	if (len(r) > 0):
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
-		name = '/tmp/crop'+str(index)+'.jpg'
+		#name = '/tmp/crop'+str(index)+'.jpg'
+		name = 'Files/img/lr.jpg'
 		cv2.imwrite(name,imgCrop)
 		index += 1
 	return r	

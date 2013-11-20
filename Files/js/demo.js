@@ -35,40 +35,11 @@ app.directive('progressIndicator', function() {
   };
 });
 
-app.factory('ProgressService', function($resource) {
-  var Progress, r, working;
-  Progress = $resource('/collections/getProgress');
-  r = {
-    'lastStatus': {
-      'text': 'Choose collection',
-      'index': 0,
-      'maxi': 0,
-      'end': true
-    }
-  };
-  working = false;
-  r.GetState = function() {
-    return working;
-  };
-  r.setCallback = function(cb) {
-    return r.cb = cb;
-  };
-  r.getLastStatus = function() {
-    return r.lastStatus;
-  };
-  r.getProgress = function() {
-    var prg;
-    working = true;
-    return prg = Progress.get({}, function() {
-      r.lastStatus = prg;
-      r.cb(prg);
-      if (prg.end !== true) {
-        r.getProgress();
-      }
-      if (prg.end === true) {
-        return working = false;
-      }
-    });
+app.factory('AskInfo', function($rootScope) {
+  var r;
+  r = {};
+  r.SendPicture = function(pict) {
+    return $rootScope.$broadcast('askInfo', pict);
   };
   return r;
 });
@@ -128,7 +99,7 @@ this.FocalCtrl = function($scope, $http, $q, $resource) {
   return $scope.graphStyle = "PieChart";
 };
 
-this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
+this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
   var Collections, Images, Process, errors, index, total;
   Collections = $resource('/collections/getlist');
   Images = $resource('/collections/getImages/:colId');
@@ -140,16 +111,9 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
   total = 0;
   index = 0;
   errors = [];
-  ProgressService.setCallback(function(res) {
-    return $scope.currentProgress = res;
-  });
-  $scope.currentProgress = ProgressService.getLastStatus();
   Collections.get({}, function(colls) {
     return $scope.collections = colls.colls;
   });
-  $scope.isWorking = function() {
-    return ProgressService.GetState();
-  };
   $scope.Process = function(id) {
     var images;
     return images = Images.get({
@@ -162,7 +126,7 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       return $scope.CropAgain();
     });
   };
-  return $scope.CropAgain = function() {
+  $scope.CropAgain = function() {
     var res, vpict;
     vpict = $scope.imgList.shift();
     index += 1;
@@ -178,9 +142,10 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
     }, function() {
       if (res.result === false) {
         errors.push(vpict.fullName);
-      }
-      if ($scope.imgList.length > 0) {
         $scope.CropAgain();
+      }
+      if (res.result === true) {
+        AskInfo.SendPicture(res.imgSrc);
       }
       if ($scope.imgList.length === 0) {
         return $scope.currentProgress = {
@@ -191,4 +156,16 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       }
     });
   };
+  return $scope.$on('Resume', function() {
+    if ($scope.imgList.length > 0) {
+      return $scope.CropAgain();
+    }
+  });
+};
+
+this.NameCtrl = function($scope, $http, $q, $resource, AskInfo) {
+  return $scope.$on('askInfo', function(sender, image) {
+    $scope.imgSrc = image;
+    return $scope.$emit('Resume');
+  });
 };

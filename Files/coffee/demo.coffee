@@ -27,25 +27,12 @@ app.directive 'progressIndicator', ->
 	templateUrl : '/demo/progress.html'
   				    
 # Progress service.
-app.factory 'ProgressService', ($resource) ->
-		Progress = $resource('/collections/getProgress')
-		r = {'lastStatus': {'text':'Choose collection', 'index':0, 'maxi':0, 'end': true}}
-		working = false
-		r.GetState = () ->
-			working
-		r.setCallback = (cb) ->
-			r.cb = cb
-		r.getLastStatus = () ->
-			r.lastStatus
-		r.getProgress = () ->
-			working = true
-			prg = Progress.get {}, ->
-				r.lastStatus = prg
-				r.cb(prg)
-				r.getProgress() if prg.end isnt true
-				working = false if prg.end is true
-		# And return r
-		r
+app.factory 'AskInfo', ($rootScope) ->
+	r = {}
+	r.SendPicture = (pict) ->
+		$rootScope.$broadcast('askInfo', pict)
+	# And return r
+	r
 	
 @FocalCtrl = ($scope, $http, $q, $resource)->
 	Graph =  $resource('/graphs/:type/:camid/:minFoc/:maxFoc/:pas')
@@ -85,7 +72,7 @@ app.factory 'ProgressService', ($resource) ->
 	$scope.pas = 30
 	$scope.graphStyle = "PieChart"
  
-@CollectionCtrl = ($scope, $http, $q, $resource, ProgressService)->
+@CollectionCtrl = ($scope, $http, $q, $resource, AskInfo)->
 	Collections = $resource('/collections/getlist')
 	Images = $resource('/collections/getImages/:colId')
 	Process = $resource('/collections/processImage',{},{do:{method:'POST'}})
@@ -93,14 +80,8 @@ app.factory 'ProgressService', ($resource) ->
 	index = 0
 	errors = []
 	
-	ProgressService.setCallback( (res) -> $scope.currentProgress = res  )
-	$scope.currentProgress = ProgressService.getLastStatus()
-	
 	Collections.get {}, (colls)->
 		$scope.collections = colls.colls
-
-	$scope.isWorking = () ->
-		ProgressService.GetState()
 		
 	$scope.Process = (id) ->
 		images = Images.get {colId:id}, ->
@@ -115,6 +96,16 @@ app.factory 'ProgressService', ($resource) ->
 		index += 1
 		$scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
 		res = Process.do {'img':vpict}, ->
-			errors.push(vpict.fullName) if res.result == false
-			$scope.CropAgain() if $scope.imgList.length > 0
+			if res.result == false
+				errors.push(vpict.fullName) 
+				$scope.CropAgain() 
+			AskInfo.SendPicture(res.imgSrc) if res.result == true
 			$scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
+	
+	$scope.$on 'Resume', () ->
+			 $scope.CropAgain() if $scope.imgList.length > 0
+			 
+@NameCtrl = ($scope, $http, $q, $resource, AskInfo)->
+	$scope.$on 'askInfo', (sender, image) ->	
+		$scope.imgSrc = image
+		$scope.$emit 'Resume'

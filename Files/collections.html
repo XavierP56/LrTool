@@ -9,6 +9,13 @@
 	<select ng-disabled="isWorking()" ng-model="collection" ng-options="c.name for c in collections" ng-change="Process(collection.id)"></select>
   	<br/><br/>
   	<progress-indicator progress=currentProgress></progress-indicator>
+  	
+  	<div ng-controller="NameCtrl">
+  		<br/>
+  		Who is it ?
+  		<br/>
+  		<img src="{{imgSrc}}"></img>
+  	</div>
 </div>
 
 

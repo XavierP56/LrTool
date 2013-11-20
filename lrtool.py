@@ -6,13 +6,15 @@ import bottle.ext.sqlite
 from bottle import route, run, request, abort, static_file
 import face
 import Queue
+import random
 
 app = bottle.Bottle()
 plugin = bottle.ext.sqlite.Plugin(dbfile='/Users/xavierpouyollon/Documents/Imgs/test/test.lrcat')
 app.install(plugin)
 
 progress_queue = None
-
+process_index = 0
+	
 @app.route('/demo/<filepath:path>')
 def server_static(filepath):
 	return static_file(filepath, root='./Files/')
@@ -125,12 +127,17 @@ def getcollection(db,colid):
 	
 @app.route('/collections/processImage', method='POST')	
 def processImage(db):
-	vpict = request.json['img']
-	if not face.crop (db, vpict):
-		return {'result':False}
-	else:
-		return {'result' : True}
-
+	global process_index
+	try:
+		vpict = request.json['img']
+		if not face.crop (db, vpict):
+			return {'result':False}
+		else:
+			process_index += 1
+			img = '/demo/img/lr.jpg?' + str (process_index)
+			return {'result' : True, 'imgSrc' : img}
+	except:
+		return {'result' : False}
 
 progress_queue = Queue.Queue(0)	
 bottle.run(app, host='localhost', port=8080, server='cherrypy')
