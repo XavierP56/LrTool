@@ -132,7 +132,11 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
   var Collections, Images, Process, errors, index, total;
   Collections = $resource('/collections/getlist');
   Images = $resource('/collections/getImages/:colId');
-  Process = $resource('/collections/processImage');
+  Process = $resource('/collections/processImage', {}, {
+    "do": {
+      method: 'POST'
+    }
+  });
   total = 0;
   index = 0;
   errors = [];
@@ -169,7 +173,7 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       'end': false,
       'errors': errors
     };
-    return res = Process.save({
+    return res = Process["do"]({
       'img': vpict
     }, function() {
       if (res.result === false) {
