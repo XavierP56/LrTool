@@ -114,7 +114,7 @@ app.factory 'ProgressService', ($resource) ->
 		vpict = $scope.imgList.shift()
 		index += 1
 		$scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
-		res = Process.get {'img':vpict}, ->
+		res = Process.save {'img':vpict}, ->
 			errors.push(vpict.fullName) if res.result == false
 			$scope.CropAgain() if $scope.imgList.length > 0
 			$scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0

@@ -169,7 +169,7 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, ProgressService) {
       'end': false,
       'errors': errors
     };
-    return res = Process.get({
+    return res = Process.save({
       'img': vpict
     }, function() {
       if (res.result === false) {

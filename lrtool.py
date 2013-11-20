@@ -123,10 +123,9 @@ def getcollection(db,colid):
 	except:
 		return []
 	
-@app.route('/collections/processImage', method='GET')	
+@app.route('/collections/processImage', method='POST')	
 def processImage(db):
-	data = request.query.get('img')
-	vpict = json.loads(data)
+	vpict = request.json['img']
 	if not face.crop (db, vpict):
 		return {'result':False}
 	else:
