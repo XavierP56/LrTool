@@ -135,7 +135,7 @@ def processImage(db):
 		else:
 			process_index += 1
 			img = '/demo/img/lr.jpg?' + str (process_index)
-			return {'result' : True, 'imgSrc' : img}
+			return {'result' : True, 'imgSrc' : img, 'id_local':vpict['id_local']}
 	except:
 		return {'result' : False}
 

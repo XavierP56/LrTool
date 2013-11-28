@@ -108,4 +108,7 @@ app.factory 'AskInfo', ($rootScope) ->
 @NameCtrl = ($scope, $http, $q, $resource, AskInfo)->
 	$scope.$on 'askInfo', (sender, image) ->	
 		$scope.imgSrc = image
+		
+	$scope.tag = () ->
 		$scope.$emit 'Resume'
+		
