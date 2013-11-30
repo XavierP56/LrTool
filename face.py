@@ -20,7 +20,8 @@ CROP_HEIGHT = 'CropHeight'
 
 index = 0
 
-def Raw2Jpg (filepath):
+def Raw2Jpg (vpict):
+	filepath = vpict['fullName']					
 	dcraw_opts = ["/usr/local/bin/dcraw", "-e", "-c", filepath]
 	dcraw_proc = Popen(dcraw_opts, stdout=PIPE)
 	image = dcraw_proc.communicate()[0]
@@ -37,8 +38,7 @@ def rotateImage(image, angle):
 def recog(vpict):
 	global index
 	
-	fullName = vpict['fullName']
-	Raw2Jpg(fullName)
+	Raw2Jpg(vpict)
 	imgf = cv2.imread('/tmp/lr.jpg',cv2.IMREAD_GRAYSCALE)
 	width = imgf.shape[1]
 	height = imgf.shape[0]
@@ -53,6 +53,7 @@ def recog(vpict):
 	detectFace = faceCascade.detectMultiScale(img,scaleFactor=1.1,minNeighbors=3)
 	lastw = 0
 	r = {}
+	name = None
 	for face in detectFace:
 		x = face [0] * scale
 		y = face [1] * scale
@@ -84,10 +85,10 @@ def recog(vpict):
 	if (len(r) > 0):
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
 		#name = '/tmp/crop'+str(index)+'.jpg'
-		name = 'Files/img/lr.jpg'
+		name = 'Files/img/' + str(vpict['id_local']) + '.jpg'
 		cv2.imwrite(name,imgCrop)
 		index += 1
-	return r	
+	return r,name
 	
 def convert2Json (dbtext):
 	res = ''
@@ -169,10 +170,10 @@ def crop(db, vpict):
 	if resultq != None:
 		r = resultq[4:]
 		res = convert2Json(r)
-		cr = recog(vpict)
+		cr,name = recog(vpict)
 		if (not CROP_LEFT in cr):
 		#	print "NO FACE DETECTED !"
-			return False
+			return False,name
 		res[CROP_LEFT] = cr[CROP_LEFT]
 		res[CROP_RIGHT] = cr[CROP_RIGHT]
 		res[CROP_BOTTOM] = cr[CROP_BOTTOM]
@@ -183,6 +184,6 @@ def crop(db, vpict):
 				WHERE id_local =:devId"""
 		db.execute(query,{"devId": devid, "cropEd": cropStr, "cropWidth":cr[CROP_WIDTH], "cropHeight":cr[CROP_HEIGHT]})
 		#print "CROP UPDATED " + str(devid)
-		return True
+		return True,name
 		
 		

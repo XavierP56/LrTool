@@ -145,7 +145,7 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
         $scope.CropAgain();
       }
       if (res.result === true) {
-        AskInfo.SendPicture(res.imgSrc);
+        AskInfo.SendPicture(res);
       }
       if ($scope.imgList.length === 0) {
         return $scope.currentProgress = {
@@ -164,8 +164,22 @@ this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
 };
 
 this.NameCtrl = function($scope, $http, $q, $resource, AskInfo) {
-  return $scope.$on('askInfo', function(sender, image) {
-    $scope.imgSrc = image;
-    return $scope.$emit('Resume');
+  var Train;
+  Train = $resource('/collections/train/:IdLocal/:name');
+  $scope.$on('askInfo', function(sender, image) {
+    $scope.image = image;
+    return $scope.imgSrc = image.imgSrc;
   });
+  $scope.tag = function() {
+    return $scope.$emit('Resume');
+  };
+  return $scope.addTrain = function() {
+    return Train.get({
+      IdLocal: $scope.image.id_local,
+      name: $scope.name
+    }, function() {
+      $scope.name = "";
+      return $scope.$emit('Resume');
+    });
+  };
 };

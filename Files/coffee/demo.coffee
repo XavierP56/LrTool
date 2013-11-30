@@ -99,16 +99,23 @@ app.factory 'AskInfo', ($rootScope) ->
 			if res.result == false
 				errors.push(vpict.fullName) 
 				$scope.CropAgain() 
-			AskInfo.SendPicture(res.imgSrc) if res.result == true
+			AskInfo.SendPicture(res) if res.result == true
 			$scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
 	
 	$scope.$on 'Resume', () ->
 			 $scope.CropAgain() if $scope.imgList.length > 0
 			 
 @NameCtrl = ($scope, $http, $q, $resource, AskInfo)->
-	$scope.$on 'askInfo', (sender, image) ->	
-		$scope.imgSrc = image
+	Train = $resource('/collections/train/:IdLocal/:name')
+	
+	$scope.$on 'askInfo', (sender, image) ->
+		$scope.image = image	
+		$scope.imgSrc = image.imgSrc
 		
 	$scope.tag = () ->
 		$scope.$emit 'Resume'
-		
+	
+	$scope.addTrain = () ->
+		Train.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
+			$scope.name = ""
+			$scope.$emit 'Resume'

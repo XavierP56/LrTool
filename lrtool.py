@@ -130,14 +130,22 @@ def processImage(db):
 	global process_index
 	try:
 		vpict = request.json['img']
-		if not face.crop (db, vpict):
+		ok, name = face.crop (db,vpict)
+		if not ok:
 			return {'result':False}
 		else:
 			process_index += 1
-			img = '/demo/img/lr.jpg?' + str (process_index)
+			img = '/demo/img/' + str(vpict['id_local']) + '.jpg?' + str (process_index)
 			return {'result' : True, 'imgSrc' : img, 'id_local':vpict['id_local']}
 	except:
 		return {'result' : False}
+
+@app.route('/collections/train/<IdLocal>/<name>')
+def Train(db, IdLocal, name):
+	print 'Train'
+	print IdLocal
+	print name
+	return {'result' :True}
 
 progress_queue = Queue.Queue(0)	
 bottle.run(app, host='localhost', port=8080, server='cherrypy')
