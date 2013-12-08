@@ -105,7 +105,8 @@ app.factory 'AskInfo', ($rootScope) ->
 	$scope.$on 'askInfo', (sender, image) ->
 		$scope.image = image	
 		$scope.imgSrc = image.imgSrc
-		
+		$scope.name = image.recog
+
 	$scope.tag = () ->
 		$scope.$emit 'Resume'
 	

@@ -132,12 +132,13 @@ def processImage(db):
 	try:
 		vpict = request.json['img']
 		ok, name = face.crop (db,vpict)
+		print name
 		if not ok:
 			return {'result':False}
 		else:
 			process_index += 1
 			img = '/demo/img/' + str(vpict['id_local']) + '.jpg?' + str (process_index)
-			return {'result' : True, 'imgSrc' : img, 'id_local':vpict['id_local']}
+			return {'result' : True, 'imgSrc' : img, 'id_local':vpict['id_local'], 'recog': name}
 	except:
 		return {'result' : False}
 

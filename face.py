@@ -54,7 +54,7 @@ def recog(vpict):
 	detectFace = faceCascade.detectMultiScale(img,scaleFactor=1.1,minNeighbors=3)
 	lastw = 0
 	r = {}
-	name = None
+	name = ''
 	for face in detectFace:
 		x = face [0] * scale
 		y = face [1] * scale
@@ -86,11 +86,13 @@ def recog(vpict):
 	if (len(r) > 0):
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
 		#name = '/tmp/crop'+str(index)+'.jpg'
-		name = 'Files/img/' + str(vpict['id_local']) + '.jpg'
-		cv2.imwrite(name,imgCrop)
+		fname = 'Files/img/' + str(vpict['id_local']) + '.jpg'
+		cv2.imwrite(fname,imgCrop)
 		index += 1
 		
-	train.Identify(imgCrop)
+	myname, confid = train.Identify(imgCrop)
+	if (confid < 50):
+		name = myname
 	return r,name
 	
 def convert2Json (dbtext):

@@ -176,7 +176,8 @@
     Train = $resource('/collections/train/:IdLocal/:name');
     $scope.$on('askInfo', function(sender, image) {
       $scope.image = image;
-      return $scope.imgSrc = image.imgSrc;
+      $scope.imgSrc = image.imgSrc;
+      return $scope.name = image.recog;
     });
     $scope.tag = function() {
       return $scope.$emit('Resume');

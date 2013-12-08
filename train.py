@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy
 
-IMAGE_SIZE = 128
+IMAGE_SIZE = 100
 
 identities = []
 images = []
@@ -39,9 +39,14 @@ def Train():
     global images
     global images_index
     global model
-    model = cv2.createLBPHFaceRecognizer()
-    model.train(numpy.asarray(images),numpy.asarray(images_index))
-    print 'Training done !'
+    try:
+        model = cv2.createLBPHFaceRecognizer()
+        #model = cv2.createEigenFaceRecognizer()
+        #model = cv2.createFisherFaceRecognizer()
+        model.train(numpy.asarray(images),numpy.asarray(images_index))
+        print 'Training done !'
+    except:
+        print 'No training yet !'
                  
 def AddTrain (name, id):
     headFileName = 'Files/img/' + str(id) + '.jpg'
@@ -58,10 +63,15 @@ def Identify (image):
     global model
     global identities
     
-    [pid, pconfidence] = model.predict(image)
-    print pid
-    name = identities[pid]
-    print name
-    print pconfidence
-    return name, pconfidence
+    
+    try:
+        imageSz = cv2.resize(image,(IMAGE_SIZE,IMAGE_SIZE))
+        [pid, pconfidence] = model.predict(imageSz)
+        print pid
+        name = identities[pid]
+        print name
+        print pconfidence
+        return name, pconfidence
+    except:
+        return None,0
  
