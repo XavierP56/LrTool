@@ -145,6 +145,9 @@ def processImage(db):
 @app.route('/collections/train/<IdLocal>/<name>')
 def Train(db, IdLocal, name):
 	train.AddTrain(name, IdLocal)
+	print 'Added to train'
+	train.ReadHeads()
+	train.Train()
 	return {'result' :True}
 
 progress_queue = Queue.Queue(0)	
