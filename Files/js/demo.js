@@ -172,17 +172,10 @@
   };
 
   this.NameCtrl = function($scope, $http, $q, $resource) {
-    var Train;
+    var Tag, Train;
     Train = $resource('/collections/train/:IdLocal/:name');
-    $scope.$on('askInfo', function(sender, image) {
-      $scope.image = image;
-      $scope.imgSrc = image.imgSrc;
-      return $scope.name = image.recog;
-    });
-    $scope.tag = function() {
-      return $scope.$emit('Resume');
-    };
-    return $scope.addTrain = function() {
+    Tag = $resource('/collections/tag/:IdLocal/:name');
+    $scope.AddTrain = function() {
       return Train.get({
         IdLocal: $scope.image.id_local,
         name: $scope.name
@@ -191,6 +184,31 @@
         return $scope.$emit('Resume');
       });
     };
+    $scope.AddTag = function() {
+      return Tag.get({
+        IdLocal: $scope.image.id_local,
+        name: $scope.name
+      }, function() {
+        $scope.name = '';
+        return $scope.$emit('Resume');
+      });
+    };
+    $scope.Skip = function() {
+      return $scope.$emit('Resume');
+    };
+    $scope.Label = function() {
+      if ($scope.name !== $scope.image.recog) {
+        $scope.AddTrain();
+      }
+      if ($scope.name === $scope.image.recog) {
+        return $scope.AddTag();
+      }
+    };
+    return $scope.$on('askInfo', function(sender, image) {
+      $scope.image = image;
+      $scope.imgSrc = image.imgSrc;
+      return $scope.name = image.recog;
+    });
   };
 
 }).call(this);

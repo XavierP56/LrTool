@@ -150,6 +150,11 @@ def Train(db, IdLocal, name):
 	train.Train()
 	return {'result' :True}
 
+@app.route('/collections/tag/<IdLocal>/<name>')
+def Tag(db, IdLocal, name):
+	print 'Tag'
+	return {'result' :True}
+		
 progress_queue = Queue.Queue(0)	
 train.ReadHeads()
 train.Train()

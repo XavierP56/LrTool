@@ -95,22 +95,32 @@ app.factory 'AskInfo', ($rootScope) ->
 				$scope.CropAgain() 
 			AskInfo.SendPicture(res) if res.result == true
 			$scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
-	
+
 	$scope.$on 'Resume', () ->
 			 $scope.CropAgain() if $scope.imgList.length > 0
 			 
 @NameCtrl = ($scope, $http, $q, $resource)->
-	Train = $resource('/collections/train/:IdLocal/:name')
-	
-	$scope.$on 'askInfo', (sender, image) ->
-		$scope.image = image	
-		$scope.imgSrc = image.imgSrc
-		$scope.name = image.recog
+  Train = $resource('/collections/train/:IdLocal/:name')
+  Tag = $resource('/collections/tag/:IdLocal/:name')
 
-	$scope.tag = () ->
-		$scope.$emit 'Resume'
-	
-	$scope.addTrain = () ->
-		Train.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
-			$scope.name = ""
-			$scope.$emit 'Resume'
+  $scope.AddTrain = () ->
+    Train.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
+      $scope.name = ""
+      $scope.$emit('Resume')
+
+  $scope.AddTag = () ->
+    Tag.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
+      $scope.name = ''
+      $scope.$emit('Resume')
+
+  $scope.Skip = () ->
+    $scope.$emit('Resume')
+
+  $scope.Label = () ->
+    $scope.AddTrain() if $scope.name != $scope.image.recog
+    $scope.AddTag() if $scope.name == $scope.image.recog
+
+  $scope.$on 'askInfo', (sender, image) ->
+    $scope.image = image
+    $scope.imgSrc = image.imgSrc
+    $scope.name = image.recog
