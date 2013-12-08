@@ -180,8 +180,7 @@
         IdLocal: $scope.image.id_local,
         name: $scope.name
       }, function() {
-        $scope.name = "";
-        return $scope.$emit('Resume');
+        return $scope.MoveNext();
       });
     };
     $scope.AddTag = function() {
@@ -189,12 +188,15 @@
         IdLocal: $scope.image.id_local,
         name: $scope.name
       }, function() {
-        $scope.name = '';
-        return $scope.$emit('Resume');
+        return $scope.MoveNext();
       });
     };
-    $scope.Skip = function() {
+    $scope.MoveNext = function() {
+      $scope.name = '';
       return $scope.$emit('Resume');
+    };
+    $scope.Skip = function() {
+      return $scope.MoveNext();
     };
     $scope.Label = function() {
       if ($scope.name !== $scope.image.recog) {

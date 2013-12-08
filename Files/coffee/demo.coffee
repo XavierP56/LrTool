@@ -105,16 +105,18 @@ app.factory 'AskInfo', ($rootScope) ->
 
   $scope.AddTrain = () ->
     Train.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
-      $scope.name = ""
-      $scope.$emit('Resume')
+      $scope.MoveNext()
 
   $scope.AddTag = () ->
     Tag.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
-      $scope.name = ''
-      $scope.$emit('Resume')
+      $scope.MoveNext()
+
+  $scope.MoveNext = () ->
+    $scope.name = ''
+    $scope.$emit('Resume')
 
   $scope.Skip = () ->
-    $scope.$emit('Resume')
+    $scope.MoveNext()
 
   $scope.Label = () ->
     $scope.AddTrain() if $scope.name != $scope.image.recog
