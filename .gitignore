@@ -5,3 +5,5 @@ Files/bower_components
 *.pyc
 *.jpg
 /.idea
+demo.map
+.DS_Store
