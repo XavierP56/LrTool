@@ -91,8 +91,7 @@ def recog(vpict):
 		index += 1
 		
 	myname, confid = train.Identify(imgCrop)
-	if (confid < 50):
-		name = myname
+	name = myname
 	return r,name
 	
 def convert2Json (dbtext):
@@ -179,15 +178,15 @@ def crop(db, vpict):
 		if (not CROP_LEFT in cr):
 		#	print "NO FACE DETECTED !"
 			return False,name
-		res[CROP_LEFT] = cr[CROP_LEFT]
-		res[CROP_RIGHT] = cr[CROP_RIGHT]
-		res[CROP_BOTTOM] = cr[CROP_BOTTOM]
-		res[CROP_TOP] = cr[CROP_TOP]
-		cropStr = convert2LR(res)
-		query = """UPDATE Adobe_imageDevelopSettings
-				SET text=:cropEd , croppedWidth=:cropWidth, croppedHeight=:cropHeight 
-				WHERE id_local =:devId"""
-		db.execute(query,{"devId": devid, "cropEd": cropStr, "cropWidth":cr[CROP_WIDTH], "cropHeight":cr[CROP_HEIGHT]})
+# 		res[CROP_LEFT] = cr[CROP_LEFT]
+# 		res[CROP_RIGHT] = cr[CROP_RIGHT]
+# 		res[CROP_BOTTOM] = cr[CROP_BOTTOM]
+# 		res[CROP_TOP] = cr[CROP_TOP]
+# 		cropStr = convert2LR(res)
+# 		query = """UPDATE Adobe_imageDevelopSettings
+# 				SET text=:cropEd , croppedWidth=:cropWidth, croppedHeight=:cropHeight 
+# 				WHERE id_local =:devId"""
+# 		db.execute(query,{"devId": devid, "cropEd": cropStr, "cropWidth":cr[CROP_WIDTH], "cropHeight":cr[CROP_HEIGHT]})
 		#print "CROP UPDATED " + str(devid)
 		return True,name
 		

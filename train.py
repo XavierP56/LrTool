@@ -40,8 +40,8 @@ def Train():
     global images_index
     global model
     try:
-        #model = cv2.createLBPHFaceRecognizer()
-        model = cv2.createEigenFaceRecognizer()
+        model = cv2.createLBPHFaceRecognizer()
+        #model = cv2.createEigenFaceRecognizer()
         #model = cv2.createFisherFaceRecognizer()
         model.train(numpy.asarray(images),numpy.asarray(images_index))
         print 'Training done !'

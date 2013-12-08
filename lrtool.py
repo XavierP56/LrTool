@@ -118,7 +118,7 @@ def getcollection(db,colid):
 	join AgLibraryFile fi on i.rootFile = fi.id_local
 	join AgLibraryFolder fo on fi.folder = fo.id_local 
 	join AgLibraryRootFolder rf on fo.rootFolder = rf.id_local
-	join AgLibraryCollectionImage col on col.collection =:colId  and col.image = i.id_local and i.copyName is not null"""
+	join AgLibraryCollectionImage col on col.collection =:colId  and col.image = i.id_local"""
 	
 		resultq =  db.execute(query,{"colId": colid}).fetchall()
 		res = [{"id_local": e[0], "developSettingsIDCache": e[1], "fullName": e[2], "orientation" : e[3]} for e in resultq]	
