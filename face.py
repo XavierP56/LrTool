@@ -186,4 +186,8 @@ def crop(db, vpict):
 		#print "CROP UPDATED " + str(devid)
 		return True,name
 		
+def addTrain (idlocal, name):
+	return True
+	
+
 		

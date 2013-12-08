@@ -3,29 +3,23 @@
 
 app = angular.module 'myApp', ['ngResource','googlechart','ui.router']
 
-app.config ($stateProvider, $urlRouterProvider) ->
-  $stateProvider.state("home",
-    url: "/Intro"
-    templateUrl: "/demo/intro.html"
-  )
-  $stateProvider.state("list"
-    url: "/Focales"
-    templateUrl: "/demo/focals.html"
-    controller: FocalCtrl)
-  $stateProvider.state("collection"
-    url: "/Collections"
-    templateUrl: "/demo/collections.html"
-    controller: CollectionCtrl)
+app.config ($stateProvider) ->
+  home = {name:"home", url: "/Intro", templateUrl: "/demo/intro.html"}
+  list = {name:"list", url: "/Focales", templateUrl: "/demo/focals.html", controller: FocalCtrl}
+  col = {name:"collection",url: "/Collections",templateUrl: "/demo/collections.html",controller: CollectionCtrl}
+  $stateProvider.state home
+  $stateProvider.state list
+  $stateProvider.state col
 
 # Directive
 app.directive 'progressIndicator', ->
 	restrict : 'E'
 	scope : { progress : '=' }
-	link : (scope,element,attrs) ->
+	link : (scope) ->
 		scope.$watch 'progress', (v)->
 			scope.curPrg = v
 	templateUrl : '/demo/progress.html'
-  				    
+
 # Progress service.
 app.factory 'AskInfo', ($rootScope) ->
 	r = {}
@@ -33,15 +27,15 @@ app.factory 'AskInfo', ($rootScope) ->
 		$rootScope.$broadcast('askInfo', pict)
 	# And return r
 	r
-	
+
 @FocalCtrl = ($scope, $http, $q, $resource)->
 	Graph =  $resource('/graphs/:type/:camid/:minFoc/:maxFoc/:pas')
 	Cameras = $resource('/cameras/models')
 	$scope.lastentries = []
 	
-	Cameras.get {}, (cams) ->
-		$scope.cameras = cams.cams
-		$scope.mycam = cams.cams[0]
+	Cameras.get {}, (cameras) ->
+		$scope.cameras = cameras.cams
+		$scope.mycam = cameras.cams[0]
 	
 	$scope.get_pub = ->
 		e = {'min': $scope.minFoc, 'max': $scope.maxFoc, 'pas': $scope.pas}
@@ -105,7 +99,7 @@ app.factory 'AskInfo', ($rootScope) ->
 	$scope.$on 'Resume', () ->
 			 $scope.CropAgain() if $scope.imgList.length > 0
 			 
-@NameCtrl = ($scope, $http, $q, $resource, AskInfo)->
+@NameCtrl = ($scope, $http, $q, $resource)->
 	Train = $resource('/collections/train/:IdLocal/:name')
 	
 	$scope.$on 'askInfo', (sender, image) ->

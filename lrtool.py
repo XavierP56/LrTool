@@ -7,6 +7,7 @@ from bottle import route, run, request, abort, static_file
 import face
 import Queue
 import random
+import train
 
 app = bottle.Bottle()
 plugin = bottle.ext.sqlite.Plugin(dbfile='/Users/xavierpouyollon/Documents/Imgs/test/test.lrcat')
@@ -142,9 +143,7 @@ def processImage(db):
 
 @app.route('/collections/train/<IdLocal>/<name>')
 def Train(db, IdLocal, name):
-	print 'Train'
-	print IdLocal
-	print name
+	train.AddTrain(name, IdLocal)
 	return {'result' :True}
 
 progress_queue = Queue.Queue(0)	

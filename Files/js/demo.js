@@ -34,7 +34,7 @@
       scope: {
         progress: '='
       },
-      link: function(scope, element, attrs) {
+      link: function(scope) {
         return scope.$watch('progress', function(v) {
           return scope.curPrg = v;
         });
@@ -57,9 +57,9 @@
     Graph = $resource('/graphs/:type/:camid/:minFoc/:maxFoc/:pas');
     Cameras = $resource('/cameras/models');
     $scope.lastentries = [];
-    Cameras.get({}, function(cams) {
-      $scope.cameras = cams.cams;
-      return $scope.mycam = cams.cams[0];
+    Cameras.get({}, function(cameras) {
+      $scope.cameras = cameras.cams;
+      return $scope.mycam = cameras.cams[0];
     });
     $scope.get_pub = function() {
       var e, mongraph, v;
@@ -171,7 +171,7 @@
     });
   };
 
-  this.NameCtrl = function($scope, $http, $q, $resource, AskInfo) {
+  this.NameCtrl = function($scope, $http, $q, $resource) {
     var Train;
     Train = $resource('/collections/train/:IdLocal/:name');
     $scope.$on('askInfo', function(sender, image) {
