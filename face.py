@@ -5,6 +5,7 @@ import sys
 from subprocess import Popen, PIPE
 from StringIO import StringIO
 import time
+import train
 
 scale = 5
 
@@ -88,6 +89,8 @@ def recog(vpict):
 		name = 'Files/img/' + str(vpict['id_local']) + '.jpg'
 		cv2.imwrite(name,imgCrop)
 		index += 1
+		
+	train.Identify(imgCrop)
 	return r,name
 	
 def convert2Json (dbtext):

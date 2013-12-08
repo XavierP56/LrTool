@@ -147,5 +147,8 @@ def Train(db, IdLocal, name):
 	return {'result' :True}
 
 progress_queue = Queue.Queue(0)	
+train.ReadHeads()
+train.Train()
+
 bottle.run(app, host='localhost', port=8080, server='cherrypy')
 #bottle.run(app, host='localhost', port=8080)
