@@ -30,7 +30,7 @@ def ReadHeads():
                         images_index.append(c)
                         print 'Head read'
                     except:
-                        print 'Error'
+                        print 'Error for' + os.path.join(subject_path, filename)
             c = c+1
     print 'Head reads !'
  
