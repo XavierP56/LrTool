@@ -108,7 +108,7 @@
   };
 
   this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
-    var Collections, Images, Process, errors, index, total;
+    var Collections, GetNames, Images, Process, errors, index, total;
     Collections = $resource('/collections/getlist');
     Images = $resource('/collections/getImages/:colId');
     Process = $resource('/collections/processImage', {}, {
@@ -116,9 +116,13 @@
         method: 'POST'
       }
     });
+    GetNames = $resource('/tags/getList');
     total = 0;
     index = 0;
     errors = [];
+    GetNames.get({}, function(names) {
+      return $scope.names = null;
+    });
     Collections.get({}, function(colls) {
       return $scope.collections = colls.colls;
     });
