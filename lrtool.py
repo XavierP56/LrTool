@@ -150,7 +150,7 @@ def Train(db, IdLocal, name):
 	print 'Added to train'
 	train.ReadHeads()
 	train.Train()
-	Tag (IdLocal, name)
+	Tag (db, IdLocal, name)
 	return {'result' :True}
 
 @app.route('/collections/tag/<IdLocal>/<name>')

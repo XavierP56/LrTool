@@ -63,7 +63,6 @@ def Identify (image):
     global model
     global identities
     
-    
     try:
         imageSz = cv2.resize(image,(IMAGE_SIZE,IMAGE_SIZE))
         [pid, pconfidence] = model.predict(imageSz)

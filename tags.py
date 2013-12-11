@@ -20,10 +20,17 @@ def GetTagsList(db):
 def TagThis (db, idlocal, name):
     global names
     tagid = names[name]
-    # Put back in the Lightroom database
-    query = """INSERT INTO AgLibraryKeywordImage(image,tag)
-                 VALUES(:imageId , :tagId)
-                 """
-    db.execute(query,{"imageId": idlocal, "tagId": tagid})
+    # Do we already have it ?
+    query = "SELECT id_local FROM AgLibraryKeywordImage i WHERE i.image=:imageId AND i.tag =:tagId"
+    r = db.execute(query,{"imageId": idlocal, "tagId": tagid}).fetchall()
+    print r
+    if (len(r) == 0):
+        print "Tagge picture !"
+        # Put back in the Lightroom database
+        query = """INSERT INTO AgLibraryKeywordImage(image,tag)
+                     VALUES(:imageId , :tagId)
+                     """
+        db.execute(query,{"imageId": idlocal, "tagId": tagid})
+    else:
+        print 'Tag already there'
 
-    print "Tagge picture !"
