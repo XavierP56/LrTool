@@ -14,9 +14,9 @@
   		<br/>
   		Who is it ?
   		<br/>
-  		<img src="{{imgSrc}}"></img>
+  		<img src="{{imgSrc}}"/>
   		<br/>
-  		<input type="text" ng-model="name">
+        <select ng-model="name" ng-options="c.name for c in names"></select>
   		<button ng-click="Skip()">Skip</button>
   		<button ng-click="Label()">Tag</button>
   	</div>

@@ -76,7 +76,7 @@ app.factory 'AskInfo', ($rootScope) ->
   errors = []
 
   GetNames.get {}, (names)->
-    $scope.names = null
+    $scope.names = names.res
 
   Collections.get {}, (colls)->
     $scope.collections = colls.colls
@@ -108,11 +108,11 @@ app.factory 'AskInfo', ($rootScope) ->
   Tag = $resource('/collections/tag/:IdLocal/:name')
 
   $scope.AddTrain = () ->
-    Train.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
+    Train.get {IdLocal: $scope.image.id_local, name : $scope.name.name}, ->
       $scope.MoveNext()
 
   $scope.AddTag = () ->
-    Tag.get {IdLocal: $scope.image.id_local, name : $scope.name}, ->
+    Tag.get {IdLocal: $scope.image.id_local, name : $scope.name.name}, ->
       $scope.MoveNext()
 
   $scope.MoveNext = () ->
@@ -123,10 +123,11 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.MoveNext()
 
   $scope.Label = () ->
-    $scope.AddTrain() if $scope.name != $scope.image.recog
-    $scope.AddTag() if $scope.name == $scope.image.recog
+    $scope.AddTrain() if $scope.name.name != $scope.image.recog
+    $scope.AddTag() if $scope.name.name == $scope.image.recog
 
   $scope.$on 'askInfo', (sender, image) ->
     $scope.image = image
     $scope.imgSrc = image.imgSrc
-    $scope.name = image.recog
+    obj = $scope.names.filter (x) -> x.name == image.recog
+    $scope.name = obj[0]

@@ -108,7 +108,7 @@
   };
 
   this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
-    var Collections, GetNames, Images, Process, errors, index, total;
+    var Collections, Images, Process, errors, index, total;
     Collections = $resource('/collections/getlist');
     Images = $resource('/collections/getImages/:colId');
     Process = $resource('/collections/processImage', {}, {
@@ -116,13 +116,9 @@
         method: 'POST'
       }
     });
-    GetNames = $resource('/tags/getList');
     total = 0;
     index = 0;
     errors = [];
-    GetNames.get({}, function(names) {
-      return $scope.names = names.res;
-    });
     Collections.get({}, function(colls) {
       return $scope.collections = colls.colls;
     });
@@ -176,53 +172,29 @@
   };
 
   this.NameCtrl = function($scope, $http, $q, $resource) {
-    var Tag, Train;
+    var Train;
     Train = $resource('/collections/train/:IdLocal/:name');
-    Tag = $resource('/collections/tag/:IdLocal/:name');
-    $scope.AddTrain = function() {
+    return $scope.AddTrain = function() {
       return Train.get({
         IdLocal: $scope.image.id_local,
-        name: $scope.name.name
+        name: $scope.name
       }, function() {
-        return $scope.MoveNext();
+        $scope.name = "";
+        return $scope.$emit('Resume');
       });
     };
-    $scope.AddTag = function() {
-      return Tag.get({
-        IdLocal: $scope.image.id_local,
-        name: $scope.name.name
-      }, function() {
-        return $scope.MoveNext();
-      });
-    };
-    $scope.MoveNext = function() {
-      $scope.name = '';
-      return $scope.$emit('Resume');
-    };
-    $scope.Skip = function() {
-      return $scope.MoveNext();
-    };
+  };
+
+  $scope.Skip = function() {
+    $scope.$emit('Resume');
     $scope.Label = function() {
-      if ($scope.name.name !== $scope.image.recog) {
-        $scope.AddTrain();
-      }
-      if ($scope.name.name === $scope.image.recog) {
-        return $scope.AddTag();
-      }
+      return alert('beauty');
     };
     return $scope.$on('askInfo', function(sender, image) {
-      var obj;
       $scope.image = image;
       $scope.imgSrc = image.imgSrc;
-      obj = $scope.names.filter(function(x) {
-        return x.name === image.recog;
-      });
-      return $scope.name = obj[0];
+      return $scope.name = image.recog;
     });
   };
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=demo.map
-*/

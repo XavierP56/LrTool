@@ -8,7 +8,8 @@ def GetTagsList(db):
     genea = gene + '/%'
     print genea
     # Retrieve the list of names descendant of it
-    query = 'SELECT * FROM AgLibraryKeyword i WHERE i.genealogy LIKE :genEA'
+    query = 'SELECT id_local, lc_name FROM AgLibraryKeyword i WHERE i.genealogy LIKE :genEA'
     resultq = db.execute(query, {"genEA": genea}).fetchall()
-    print resultq
-    return {'res':'ok'}
+    res = [{"id": e[0], "name": e[1]} for e in resultq]   
+    print res 
+    return {'res':res}
