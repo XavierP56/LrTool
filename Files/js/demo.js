@@ -187,6 +187,7 @@
         method: 'POST'
       }
     });
+    $scope.showMe = false;
     $scope.AddTrain = function() {
       return Train["do"]({
         'face': $scope.curHead
@@ -202,6 +203,7 @@
       });
     };
     $scope.MoveNext = function() {
+      $scope.showMe = false;
       $scope.name = '';
       return $scope.$emit('Resume');
     };
@@ -221,6 +223,7 @@
     };
     return $scope.$on('askInfo', function(sender, faces) {
       var headname, headpict, imgSrc, obj;
+      $scope.showMe = true;
       headpict = faces.detect[0].headPict;
       headname = faces.detect[0].name;
       $scope.guess = headname;

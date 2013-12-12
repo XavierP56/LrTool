@@ -1,3 +1,6 @@
+# Copyright Xavier Pouyollon 2013
+# GPL v3 License
+
 import json
 import time
 import random

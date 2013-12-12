@@ -1,3 +1,6 @@
+# Copyright Xavier Pouyollon 2013
+# GPL v3 License
+
 import os
 import cv2
 import numpy

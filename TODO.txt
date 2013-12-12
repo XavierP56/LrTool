@@ -1,0 +1,4 @@
+- Improve facial recognition : Locate the eyes, rotate for better alignement
+- Be able to detect more than 1 face per image
+- Improve HTML Front-end
+- Easy install for both MacOs & Windows.

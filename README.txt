@@ -1,10 +1,11 @@
 Lr Tool.
 An experiment with Python, AngularJS, Lightroom database and OpenCV.
 
-MIT License.
+GPL v3
 Copyright Xavier Pouyollon 2013.
 
 - Display statical datas of the used focal in a browser.
+- Do facial recognition and add tags in the database : Backup your database ! Use at your own risks !
 
 Dependencies (use home-brew to install)
 
@@ -12,12 +13,19 @@ Dependencies (use home-brew to install)
 - Python-bottle
 - Python-bottle-sql
 - CherryPi
-- OpenCV.
+- OpenCV
 - Bower
 
 cd Files
 bower install
 
 Start the python server.
-Use a browser on http://localhost:8080/index.html
+Use a browser on http://localhost:8080/index.html. Since it is an HTML front-end, you can use it from your ipad to
+recognize the faces in your collections !
 
+Files/train contains the various pictures of that are used to recognize the faces.
+Files/img is a temporary working directory
+
+To use the facial reco:
+- Create a "Faces" keyword. Create the names you want to recognize as children of "Faces".
+- Put your images in a collection.

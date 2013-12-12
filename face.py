@@ -1,3 +1,6 @@
+# Copyright Xavier Pouyollon 2013
+# GPL v3 License
+
 import cv2
 import numpy as np
 import getopt

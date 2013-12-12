@@ -1,3 +1,5 @@
+# Copyright Xavier Pouyollon 2013
+# GPL v3 License
 
 app = angular.module 'myApp', ['ngResource','googlechart','ui.router']
 
@@ -108,6 +110,7 @@ app.factory 'AskInfo', ($rootScope) ->
 @NameCtrl = ($scope, $http, $q, $resource)->
   Train = $resource('/collections/train',{},{do:{method:'POST'}})
   Tag = $resource('/collections/tag',{},{do:{method:'POST'}})
+  $scope.showMe = false
 
   $scope.AddTrain = () ->
     Train.do {'face':$scope.curHead}, ->
@@ -118,6 +121,7 @@ app.factory 'AskInfo', ($rootScope) ->
       $scope.MoveNext()
 
   $scope.MoveNext = () ->
+    $scope.showMe = false
     $scope.name = ''
     $scope.$emit('Resume')
 
@@ -132,6 +136,7 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.curHead.name = name
 
   $scope.$on 'askInfo', (sender, faces) ->
+    $scope.showMe = true
     # We can only see 1 face for now. Improve this !
     headpict = faces.detect[0].headPict
     headname = faces.detect[0].name
