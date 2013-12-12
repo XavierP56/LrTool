@@ -1,7 +1,8 @@
 <div>
 	Put your images into a collection.
 	<br/>
-	Enter the name of the various faces. It will learn and will recognize the subjet. In case of error, enter the correct name.
+	In Lightroom, create a Faces keyword. <br/>
+    Create all names you want to recognize as children of Faces keyword.
 	<br><br/>
 	<b>USE AT YOUR OWN RISK. IT CAN CORRUPT THE DATABASE, WORK WITH A BACKUP !</b>
 	<br/><br/>
@@ -16,7 +17,7 @@
   		<br/>
   		<img src="{{imgSrc}}"/>
   		<br/>
-        <select ng-model="name" ng-options="c.name for c in names"></select>
+        <select ng-model="name" ng-options="c.name for c in names" ng-change="SetName(name.name)"></select>
   		<button ng-click="Skip()">Skip</button>
   		<button ng-click="Label()">Tag</button>
   	</div>

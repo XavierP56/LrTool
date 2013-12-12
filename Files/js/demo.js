@@ -152,11 +152,11 @@
       return res = Process["do"]({
         'img': vpict
       }, function() {
-        if (res.result === false) {
+        if (res.detect.length === 0) {
           errors.push(vpict.fullName);
           $scope.CropAgain();
         }
-        if (res.result === true) {
+        if (res.detect.length > 0) {
           AskInfo.SendPicture(res);
         }
         if ($scope.imgList.length === 0) {
@@ -177,20 +177,26 @@
 
   this.NameCtrl = function($scope, $http, $q, $resource) {
     var Tag, Train;
-    Train = $resource('/collections/train/:IdLocal/:name');
-    Tag = $resource('/collections/tag/:IdLocal/:name');
+    Train = $resource('/collections/train', {}, {
+      "do": {
+        method: 'POST'
+      }
+    });
+    Tag = $resource('/collections/tag', {}, {
+      "do": {
+        method: 'POST'
+      }
+    });
     $scope.AddTrain = function() {
-      return Train.get({
-        IdLocal: $scope.image.id_local,
-        name: $scope.name.name
+      return Train["do"]({
+        'face': $scope.curHead
       }, function() {
         return $scope.MoveNext();
       });
     };
     $scope.AddTag = function() {
-      return Tag.get({
-        IdLocal: $scope.image.id_local,
-        name: $scope.name.name
+      return Tag["do"]({
+        'face': $scope.curHead
       }, function() {
         return $scope.MoveNext();
       });
@@ -203,19 +209,31 @@
       return $scope.MoveNext();
     };
     $scope.Label = function() {
-      if ($scope.name.name !== $scope.image.recog) {
+      if ($scope.name.name !== $scope.guess) {
         $scope.AddTrain();
       }
-      if ($scope.name.name === $scope.image.recog) {
+      if ($scope.name.name === $scope.guess) {
         return $scope.AddTag();
       }
     };
-    return $scope.$on('askInfo', function(sender, image) {
-      var obj;
-      $scope.image = image;
-      $scope.imgSrc = image.imgSrc;
+    $scope.SetName = function(name) {
+      return $scope.curHead.name = name;
+    };
+    return $scope.$on('askInfo', function(sender, faces) {
+      var headname, headpict, imgSrc, obj;
+      headpict = faces.detect[0].headPict;
+      headname = faces.detect[0].name;
+      $scope.guess = headname;
+      imgSrc = faces.detect[0].headPath;
+      $scope.curHead = {
+        'id_img': faces.id_img,
+        'name': headname,
+        'cropHead': headpict
+      };
+      $scope.faces = faces;
+      $scope.imgSrc = imgSrc;
       obj = $scope.names.filter(function(x) {
-        return x.name === image.recog;
+        return x.name === headname;
       });
       return $scope.name = obj[0];
     });

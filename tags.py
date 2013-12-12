@@ -16,9 +16,10 @@ def GetTagsList(db):
     print res 
     return {'res':res}
 
-# idlocal is the picture being tagged with name as tag
-def TagThis (db, idlocal, name):
+def TagThis (db, curHead):
     global names
+    name = curHead['name']
+    idlocal = curHead['id_img']
     tagid = names[name]
     # Do we already have it ?
     query = "SELECT id_local FROM AgLibraryKeywordImage i WHERE i.image=:imageId AND i.tag =:tagId"

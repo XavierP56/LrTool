@@ -6,6 +6,7 @@ from subprocess import Popen, PIPE
 from StringIO import StringIO
 import time
 import train
+import uuid
 
 scale = 5
 
@@ -86,13 +87,20 @@ def recog(vpict):
 	if (len(r) > 0):
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
 		#name = '/tmp/crop'+str(index)+'.jpg'
-		fname = 'Files/img/' + str(vpict['id_local']) + '.jpg'
+		basepath = 'img/head_' + str(uuid.uuid4()) + '.jpg'
+		fname = 'Files/' + basepath
+		htmlpath =  basepath
 		cv2.imwrite(fname,imgCrop)
 		index += 1
 		
+
 	myname, confid = train.Identify(imgCrop)
-	name = myname
-	return r,name
+	faces = []
+	if (len(r) >0):
+		face = { "name": myname, "headPict":fname, "headPath":htmlpath}
+		faces.append(face)
+	result = {"id_img":vpict['id_local'], "detect":faces}
+	return result
 	
 def convert2Json (dbtext):
 	res = ''
@@ -174,10 +182,11 @@ def crop(db, vpict):
 	if resultq != None:
 		r = resultq[4:]
 		res = convert2Json(r)
-		cr,name = recog(vpict)
-		if (not CROP_LEFT in cr):
-		#	print "NO FACE DETECTED !"
-			return False,name
+		res = recog(vpict)
+		return res;
+	else:
+		return None
+	
 # 		res[CROP_LEFT] = cr[CROP_LEFT]
 # 		res[CROP_RIGHT] = cr[CROP_RIGHT]
 # 		res[CROP_BOTTOM] = cr[CROP_BOTTOM]
@@ -188,7 +197,7 @@ def crop(db, vpict):
 # 				WHERE id_local =:devId"""
 # 		db.execute(query,{"devId": devid, "cropEd": cropStr, "cropWidth":cr[CROP_WIDTH], "cropHeight":cr[CROP_HEIGHT]})
 		#print "CROP UPDATED " + str(devid)
-		return True,name
+
 		
 
 

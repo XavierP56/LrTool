@@ -133,30 +133,26 @@ def processImage(db):
 	global process_index
 	try:
 		vpict = request.json['img']
-		ok, name = face.crop (db,vpict)
-		print name
-		if not ok:
-			return {'result':False}
-		else:
-			process_index += 1
-			img = '/demo/img/' + str(vpict['id_local']) + '.jpg?' + str (process_index)
-			return {'result' : True, 'imgSrc' : img, 'id_local':vpict['id_local'], 'recog': name}
+		res = face.crop (db,vpict)
+		return res
 	except:
-		return {'result' : False}
+		return None
 
-@app.route('/collections/train/<IdLocal>/<name>')
-def Train(db, IdLocal, name):
-	train.AddTrain(name, IdLocal)
+@app.route('/collections/train', method='POST')
+def Train(db):
+	curHead = request.json['face']
+	train.AddTrain(curHead)
 	print 'Added to train'
 	train.ReadHeads()
 	train.Train()
-	Tag (db, IdLocal, name)
+	tags.TagThis (db, curHead)
 	return {'result' :True}
 
-@app.route('/collections/tag/<IdLocal>/<name>')
-def Tag(db, IdLocal, name):
+@app.route('/collections/tag', method='POST')
+def Tag(db):
 	print 'Tag'
-	tags.TagThis (db, IdLocal, name)
+	curHead = request.json['face']
+	tags.TagThis (db, curHead)
 	return {'result' :True}
 		
 progress_queue = Queue.Queue(0)	

@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy
+import uuid
 
 IMAGE_SIZE = 100
 
@@ -48,15 +49,15 @@ def Train():
     except:
         print 'No training yet !'
                  
-def AddTrain (name, id):
-    headFileName = 'Files/img/' + str(id) + '.jpg'
-    directory = 'Files/train/' + name
+def AddTrain (curHead):
+    headFileName = curHead['cropHead']
+    directory = 'Files/train/' + curHead['name']
     if not os.path.exists(directory):
         os.makedirs(directory)
     # Create a miniature for recognition
     head = cv2.imread(headFileName,cv2.IMREAD_GRAYSCALE)
     head = cv2.resize(head, (IMAGE_SIZE,IMAGE_SIZE))
-    headName = directory + '/' + 'head_' + str(id)  + '.jpg'
+    headName = directory + '/' + 'head_' + str(uuid.uuid4())  + '.jpg'
     cv2.imwrite(headName, head)
     
 def Identify (image):

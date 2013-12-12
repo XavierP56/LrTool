@@ -94,25 +94,25 @@ app.factory 'AskInfo', ($rootScope) ->
     index += 1
     $scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
     res = Process.do {'img':vpict}, ->
-      if res.result == false
+      if res.detect.length == 0
         errors.push(vpict.fullName)
         $scope.CropAgain()
-      AskInfo.SendPicture(res) if res.result == true
+      AskInfo.SendPicture(res) if res.detect.length > 0
       $scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
 
   $scope.$on 'Resume', () ->
        $scope.CropAgain() if $scope.imgList.length > 0
 
 @NameCtrl = ($scope, $http, $q, $resource)->
-  Train = $resource('/collections/train/:IdLocal/:name')
-  Tag = $resource('/collections/tag/:IdLocal/:name')
+  Train = $resource('/collections/train',{},{do:{method:'POST'}})
+  Tag = $resource('/collections/tag',{},{do:{method:'POST'}})
 
   $scope.AddTrain = () ->
-    Train.get {IdLocal: $scope.image.id_local, name : $scope.name.name}, ->
+    Train.do {'face':$scope.curHead}, ->
       $scope.MoveNext()
 
   $scope.AddTag = () ->
-    Tag.get {IdLocal: $scope.image.id_local, name : $scope.name.name}, ->
+    Tag.do {'face':$scope.curHead}, ->
       $scope.MoveNext()
 
   $scope.MoveNext = () ->
@@ -123,11 +123,20 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.MoveNext()
 
   $scope.Label = () ->
-    $scope.AddTrain() if $scope.name.name != $scope.image.recog
-    $scope.AddTag() if $scope.name.name == $scope.image.recog
+    $scope.AddTrain() if $scope.name.name != $scope.guess
+    $scope.AddTag() if $scope.name.name == $scope.guess
 
-  $scope.$on 'askInfo', (sender, image) ->
-    $scope.image = image
-    $scope.imgSrc = image.imgSrc
-    obj = $scope.names.filter (x) -> x.name == image.recog
+  $scope.SetName = (name) ->
+    $scope.curHead.name = name
+
+  $scope.$on 'askInfo', (sender, faces) ->
+    # We can only see 1 face for now. Improve this !
+    headpict = faces.detect[0].headPict
+    headname = faces.detect[0].name
+    $scope.guess = headname
+    imgSrc = faces.detect[0].headPath
+    $scope.curHead = { 'id_img' : faces.id_img, 'name' : headname, 'cropHead' : headpict}
+    $scope.faces = faces
+    $scope.imgSrc = imgSrc
+    obj = $scope.names.filter (x) -> x.name == headname
     $scope.name = obj[0]
