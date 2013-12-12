@@ -1,5 +1,3 @@
-# cd ~/BottleAngular/Files/coffee
-# coffee -b -c -o ../js/ -w demo.coffee
 
 app = angular.module 'myApp', ['ngResource','googlechart','ui.router']
 
@@ -66,6 +64,8 @@ app.factory 'AskInfo', ($rootScope) ->
   $scope.pas = 30
   $scope.graphStyle = "PieChart"
 
+# This controller moves into the list of pictures to tag
+
 @CollectionCtrl = ($scope, $http, $q, $resource, AskInfo)->
   Collections = $resource('/collections/getlist')
   Images = $resource('/collections/getImages/:colId')
@@ -102,6 +102,8 @@ app.factory 'AskInfo', ($rootScope) ->
 
   $scope.$on 'Resume', () ->
        $scope.CropAgain() if $scope.imgList.length > 0
+
+# This controller displays the various faces found in a picture
 
 @NameCtrl = ($scope, $http, $q, $resource)->
   Train = $resource('/collections/train',{},{do:{method:'POST'}})

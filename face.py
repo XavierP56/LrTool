@@ -92,9 +92,11 @@ def recog(vpict):
 		htmlpath =  basepath
 		cv2.imwrite(fname,imgCrop)
 		index += 1
+	else:
+		imgCrop = None
 		
-
-	myname, confid = train.Identify(imgCrop)
+	if (imgCrop != None): 
+		myname, confid = train.Identify(imgCrop)
 	faces = []
 	if (len(r) >0):
 		face = { "name": myname, "headPict":fname, "headPath":htmlpath}
