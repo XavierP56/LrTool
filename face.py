@@ -10,6 +10,8 @@ from StringIO import StringIO
 import time
 import train
 import uuid
+import shutil
+import os
 
 scale = 5
 
@@ -179,6 +181,7 @@ def convert2LR(p):
 	return res
 	
 def crop(db, vpict):
+	init()
 	idlocal = vpict['id_local']
 	devid = vpict['developSettingsIDCache']
 	query = """select text from Adobe_imageDevelopSettings d where d.id_local =:devId"""
@@ -191,6 +194,14 @@ def crop(db, vpict):
 		return res;
 	else:
 		return None
+
+def init():
+	directory = 'Files/img'
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+	
+def finish():
+	shutil.rmtree ('Files/img')
 	
 # 		res[CROP_LEFT] = cr[CROP_LEFT]
 # 		res[CROP_RIGHT] = cr[CROP_RIGHT]

@@ -131,10 +131,10 @@
         index = 0;
         total = $scope.imgList.length;
         errors = [];
-        return $scope.CropAgain();
+        return $scope.ProcessAgain();
       });
     };
-    $scope.CropAgain = function() {
+    $scope.ProcessAgain = function() {
       var res, vpict;
       vpict = $scope.imgList.shift();
       index += 1;
@@ -150,7 +150,7 @@
       }, function() {
         if (res.result === false) {
           errors.push(vpict.fullName);
-          $scope.CropAgain();
+          $scope.ProcessAgain();
         }
         if (res.result === true) {
           AskInfo.SendPicture(res);
@@ -166,7 +166,7 @@
     };
     return $scope.$on('Resume', function() {
       if ($scope.imgList.length > 0) {
-        return $scope.CropAgain();
+        return $scope.ProcessAgain();
       }
     });
   };

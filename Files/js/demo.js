@@ -108,7 +108,7 @@
   };
 
   this.CollectionCtrl = function($scope, $http, $q, $resource, AskInfo) {
-    var Collections, GetNames, Images, Process, errors, index, total;
+    var Collections, Finish, GetNames, Images, Process, errors, index, total;
     Collections = $resource('/collections/getlist');
     Images = $resource('/collections/getImages/:colId');
     Process = $resource('/collections/processImage', {}, {
@@ -117,6 +117,7 @@
       }
     });
     GetNames = $resource('/tags/getList');
+    Finish = $resource('/collections/finish');
     total = 0;
     index = 0;
     errors = [];
@@ -135,10 +136,10 @@
         index = 0;
         total = $scope.imgList.length;
         errors = [];
-        return $scope.CropAgain();
+        return $scope.ProcessAgain();
       });
     };
-    $scope.CropAgain = function() {
+    $scope.ProcessAgain = function() {
       var res, vpict;
       vpict = $scope.imgList.shift();
       index += 1;
@@ -154,7 +155,7 @@
       }, function() {
         if (res.detect.length === 0) {
           errors.push(vpict.fullName);
-          $scope.CropAgain();
+          $scope.ProcessAgain();
         }
         if (res.detect.length > 0) {
           AskInfo.SendPicture(res);
@@ -168,9 +169,15 @@
         }
       });
     };
+    $scope.RemoveTempFiles = function() {
+      return Finish.get({}, function() {});
+    };
     return $scope.$on('Resume', function() {
+      if ($scope.imgList.length === 0) {
+        $scope.RemoveTempFiles();
+      }
       if ($scope.imgList.length > 0) {
-        return $scope.CropAgain();
+        return $scope.ProcessAgain();
       }
     });
   };

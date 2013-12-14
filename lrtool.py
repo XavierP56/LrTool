@@ -12,12 +12,9 @@ import Queue
 import random
 import train
 import tags
-
+import argparse
 
 app = bottle.Bottle()
-plugin = bottle.ext.sqlite.Plugin(dbfile='/Users/xavierpouyollon/Documents/Imgs/test/test.lrcat')
-app.install(plugin)
-
 progress_queue = None
 process_index = 0
 	
@@ -158,14 +155,23 @@ def Tag(db):
 	tags.TagThis (db, curHead)
 	return {'result' :True}
 		
-progress_queue = Queue.Queue(0)	
-train.ReadHeads()
-train.Train()
-
 # Retrieve a list of names under the Faces keyword.
 @app.route('/tags/getList')
 def GetTagList(db):
 	return tags.GetTagsList(db)
 
+@app.route('/collections/finish')
+def Finish(db):
+	print 'Finish. Purge temp dir'
+	face.finish()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("dbpath",help="Path to .lrcat database")
+args = parser.parse_args()
+plugin = bottle.ext.sqlite.Plugin(dbfile=args.dbpath)
+progress_queue = Queue.Queue(0)	
+train.ReadHeads()
+train.Train()
+app.install(plugin)
 bottle.run(app, host='localhost', port=8080, server='cherrypy')
-#bottle.run(app, host='localhost', port=8080)
+

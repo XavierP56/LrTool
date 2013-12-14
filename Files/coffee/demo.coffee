@@ -73,6 +73,8 @@ app.factory 'AskInfo', ($rootScope) ->
   Images = $resource('/collections/getImages/:colId')
   Process = $resource('/collections/processImage',{},{do:{method:'POST'}})
   GetNames = $resource('/tags/getList')
+  Finish = $resource('/collections/finish')
+
   total = 0
   index = 0
   errors = []
@@ -89,21 +91,25 @@ app.factory 'AskInfo', ($rootScope) ->
       index = 0
       total = $scope.imgList.length
       errors = []
-      $scope.CropAgain()
+      $scope.ProcessAgain()
 
-  $scope.CropAgain = () ->
+  $scope.ProcessAgain = () ->
     vpict = $scope.imgList.shift()
     index += 1
     $scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
     res = Process.do {'img':vpict}, ->
       if res.detect.length == 0
         errors.push(vpict.fullName)
-        $scope.CropAgain()
+        $scope.ProcessAgain()
       AskInfo.SendPicture(res) if res.detect.length > 0
       $scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
 
+  $scope.RemoveTempFiles = () ->
+    Finish.get {}, () ->
+
   $scope.$on 'Resume', () ->
-       $scope.CropAgain() if $scope.imgList.length > 0
+    $scope.RemoveTempFiles()if $scope.imgList.length == 0
+    $scope.ProcessAgain() if $scope.imgList.length > 0
 
 # This controller displays the various faces found in a picture
 
