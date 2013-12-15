@@ -98,6 +98,7 @@ app.factory 'AskInfo', ($rootScope) ->
     index += 1
     $scope.currentProgress = {'text':vpict.fullName, 'index': index, 'maxi': total, 'end':false, 'errors':errors}
     res = Process.do {'img':vpict}, ->
+      $scope.colors = res.colorpath
       if res.detect.length == 0
         errors.push(vpict.fullName)
         $scope.ProcessAgain()
@@ -129,7 +130,8 @@ app.factory 'AskInfo', ($rootScope) ->
   $scope.MoveNext = () ->
     $scope.showMe = false
     $scope.name = ''
-    $scope.$emit('Resume')
+    $scope.$emit('Resume') if $scope.FaceList.length == 0
+    $scope.ProcessAgain() if $scope.FaceList.length > 0
 
   $scope.Skip = () ->
     $scope.MoveNext()
@@ -141,15 +143,20 @@ app.factory 'AskInfo', ($rootScope) ->
   $scope.SetName = (name) ->
     $scope.curHead.name = name
 
-  $scope.$on 'askInfo', (sender, faces) ->
+  $scope.ProcessAgain = () ->
     $scope.showMe = true
-    # We can only see 1 face for now. Improve this !
-    headpict = faces.detect[0].headPict
-    headname = faces.detect[0].name
+    cface = $scope.FaceList.shift()
+    # Process the current face.
+    headpict = cface.headPict
+    headname = cface.name
     $scope.guess = headname
-    imgSrc = faces.detect[0].headPath
-    $scope.curHead = { 'id_img' : faces.id_img, 'name' : headname, 'cropHead' : headpict}
-    $scope.faces = faces
+    imgSrc = cface.headPath
+    $scope.curHead = { 'id_img' : $scope.id_img, 'name' : headname, 'cropHead' : headpict}
     $scope.imgSrc = imgSrc
     obj = $scope.names.filter (x) -> x.name == headname
     $scope.name = obj[0]
+
+  $scope.$on 'askInfo', (sender, faces) ->
+    $scope.id_img = faces.id_img
+    $scope.FaceList = faces.detect
+    $scope.ProcessAgain()

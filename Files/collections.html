@@ -10,7 +10,8 @@
 	<select ng-disabled="isWorking()" ng-model="collection" ng-options="c.name for c in collections" ng-change="Process(collection.id)"></select>
   	<br/><br/>
   	<progress-indicator progress=currentProgress></progress-indicator>
-  	
+  	<img src="{{colors}}"/>
+
   	<div ng-controller="NameCtrl" ng-show="showMe">
   		<br/>
   		Who is it ?

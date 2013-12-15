@@ -42,10 +42,23 @@ def rotateImage(image, angle):
   result = cv2.warpAffine(image, rot_mat, image.shape,flags=cv2.INTER_LINEAR)
   return result
  	
+def findeyes(img):
+	eyeCascade = cv2.CascadeClassifier("/usr/local/share/OpenCV/haarcascades/haarcascade_eye.xml")
+	detectEyes = eyeCascade.detectMultiScale(img)
+	return len(detectEyes)
+
 def recog(vpict):
 	global index
 	
 	Raw2Jpg(vpict)
+	# Make a small version in color.
+	color = cv2.imread('/tmp/lr.jpg')
+	colors = cv2.resize(color,(640,480))
+	#if (vpict['orientation'] == 'DA'):
+	#	colors = rotateImage(colors, 90)
+	colorspath = 'img/color_' + str(uuid.uuid4()) + '.jpg'
+	cv2.imwrite('Files/'+colorspath, colors)
+	
 	imgf = cv2.imread('/tmp/lr.jpg',cv2.IMREAD_GRAYSCALE)
 	width = imgf.shape[1]
 	height = imgf.shape[0]
@@ -58,55 +71,30 @@ def recog(vpict):
 
 	faceCascade = cv2.CascadeClassifier("/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml")
 	detectFace = faceCascade.detectMultiScale(img,scaleFactor=1.1,minNeighbors=3)
-	lastw = 0
-	r = {}
-	name = ''
-	for face in detectFace:
-		x = face [0] * scale
-		y = face [1] * scale
-		w = face [2] * scale 
-		h = face [3] * scale
 
-		# Crop the values for Lightroom around face
-		if (vpict['orientation'] == 'DA'):
-			cropTop =  (float(x) / width)
-			cropLeft =   1.0 - (float(y) / height)
-			cropBottom = (float(x+w) / width)	
-			cropRight = 1.0 - (float(y+h) / height)		
-		else:
-			cropLeft =  (float(x) / width)
-			cropTop =   (float(y) / height)
-			cropRight = (float(x+w) / width)	
-			cropBottom = (float(y+h) / height)
-		
-		if (w > lastw):
-			r = {}
-			r[CROP_LEFT] = str(cropLeft)
-			r[CROP_RIGHT] = str(cropRight)
-			r[CROP_TOP] = str(cropTop)
-			r[CROP_BOTTOM] = str(cropBottom)
-			r[CROP_WIDTH] = str(w)
-			r[CROP_HEIGHT] = str(h)
-		lastw = w
-		
-	if (len(r) > 0):
+	print 'Faces:' + str(len(detectFace))
+	imgCrop = None
+	faces = []
+	found = 0
+	
+	for face in detectFace:	
 		imgCrop = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
-		#name = '/tmp/crop'+str(index)+'.jpg'
+		if (findeyes(imgCrop) == 0):
+			imgCrop = None
+			continue
+		# We can safely assume it is an head for this image.
 		basepath = 'img/head_' + str(uuid.uuid4()) + '.jpg'
 		fname = 'Files/' + basepath
 		htmlpath =  basepath
 		cv2.imwrite(fname,imgCrop)
-		index += 1
-	else:
-		imgCrop = None
-		
-	if (imgCrop != None): 
+		found += 1
 		myname, confid = train.Identify(imgCrop)
-	faces = []
-	if (len(r) >0):
 		face = { "name": myname, "headPict":fname, "headPath":htmlpath}
 		faces.append(face)
-	result = {"id_img":vpict['id_local'], "detect":faces}
+
+	result = {"id_img":vpict['id_local'], "colorpath":colorspath, "detect":faces}
+	print "Found faces " + str (found)
+	print result
 	return result
 	
 def convert2Json (dbtext):

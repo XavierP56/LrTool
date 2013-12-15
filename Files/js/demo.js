@@ -153,6 +153,7 @@
       return res = Process["do"]({
         'img': vpict
       }, function() {
+        $scope.colors = res.colorpath;
         if (res.detect.length === 0) {
           errors.push(vpict.fullName);
           $scope.ProcessAgain();
@@ -212,7 +213,12 @@
     $scope.MoveNext = function() {
       $scope.showMe = false;
       $scope.name = '';
-      return $scope.$emit('Resume');
+      if ($scope.FaceList.length === 0) {
+        $scope.$emit('Resume');
+      }
+      if ($scope.FaceList.length > 0) {
+        return $scope.ProcessAgain();
+      }
     };
     $scope.Skip = function() {
       return $scope.MoveNext();
@@ -228,24 +234,29 @@
     $scope.SetName = function(name) {
       return $scope.curHead.name = name;
     };
-    return $scope.$on('askInfo', function(sender, faces) {
-      var headname, headpict, imgSrc, obj;
+    $scope.ProcessAgain = function() {
+      var cface, headname, headpict, imgSrc, obj;
       $scope.showMe = true;
-      headpict = faces.detect[0].headPict;
-      headname = faces.detect[0].name;
+      cface = $scope.FaceList.shift();
+      headpict = cface.headPict;
+      headname = cface.name;
       $scope.guess = headname;
-      imgSrc = faces.detect[0].headPath;
+      imgSrc = cface.headPath;
       $scope.curHead = {
-        'id_img': faces.id_img,
+        'id_img': $scope.id_img,
         'name': headname,
         'cropHead': headpict
       };
-      $scope.faces = faces;
       $scope.imgSrc = imgSrc;
       obj = $scope.names.filter(function(x) {
         return x.name === headname;
       });
       return $scope.name = obj[0];
+    };
+    return $scope.$on('askInfo', function(sender, faces) {
+      $scope.id_img = faces.id_img;
+      $scope.FaceList = faces.detect;
+      return $scope.ProcessAgain();
     });
   };
 
