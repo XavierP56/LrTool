@@ -133,7 +133,7 @@ def processImage(db):
 	global process_index
 	try:
 		vpict = request.json['img']
-		res = face.crop (db,vpict)
+		res = face.lookForFaces (db,vpict)
 		return res
 	except:
 		return None

@@ -15,16 +15,6 @@ import os
 
 scale = 5
 
-LOOK_KEY = 1
-LOOK_VALUE = 3
-
-CROP_LEFT = 'CropLeft'
-CROP_RIGHT = 'CropRight'
-CROP_BOTTOM = 'CropBottom'
-CROP_TOP = 'CropTop'
-CROP_WIDTH = 'CropWidth'
-CROP_HEIGHT = 'CropHeight'
-
 index = 0
 
 def Raw2Jpg (vpict):
@@ -97,78 +87,7 @@ def recog(vpict):
 	print result
 	return result
 	
-def convert2Json (dbtext):
-	res = ''
-	openb = 0
-	res = {}
-	state = LOOK_KEY
-	key = ''
-	value = ''
-	inarray = False
-	
-	for c in dbtext:
-		if (c == '\n'):
-			if (inarray == True):
-				value += c
-			continue
-				
-		if (c == ' '):
-			if (state == LOOK_KEY):
-				continue
-				
-		if (c == '{'):
-			openb += 1	
-			if (openb > 1):
-				state = LOOK_VALUE
-				value = '{'
-				inarray = True
-			continue
-			
-		if (c == '}'):
-			openb -= 1
-			if (openb == 1):
-				state = LOOK_KEY
-				value += '}'
-				inarray = False
-			continue
-				
-		if (c == '='):
-			state = LOOK_VALUE
-			continue
-			
-		if (c == ','):
-			if (state == LOOK_VALUE) and (inarray == True):
-				value += c
-				continue
-				
-			#print key + ':' + value
-			res[key] = value
-			key = ''
-			value = ''
-			state = LOOK_KEY;
-			continue
-				
-		if (state == LOOK_KEY):
-			key += c
-		if (state == LOOK_VALUE):
-		 	value += c		 
-	return res
-	
-def convert2LR(p):
-	res = 's = { '
-	cnt = 0
-	for k in p:
-		if (cnt > 0):
-			res += ',\n'
-		v = p[k]
-		res += k
-		res += '='
-		res += v
-		cnt += 1
-	res += ' }'
-	return res
-	
-def crop(db, vpict):
+def lookForFaces(db, vpict):
 	init()
 	idlocal = vpict['id_local']
 	devid = vpict['developSettingsIDCache']
@@ -177,7 +96,6 @@ def crop(db, vpict):
 	resultq = result[0][0]
 	if resultq != None:
 		r = resultq[4:]
-		res = convert2Json(r)
 		res = recog(vpict)
 		return res;
 	else:
@@ -191,16 +109,7 @@ def init():
 def finish():
 	shutil.rmtree ('Files/img')
 	
-# 		res[CROP_LEFT] = cr[CROP_LEFT]
-# 		res[CROP_RIGHT] = cr[CROP_RIGHT]
-# 		res[CROP_BOTTOM] = cr[CROP_BOTTOM]
-# 		res[CROP_TOP] = cr[CROP_TOP]
-# 		cropStr = convert2LR(res)
-# 		query = """UPDATE Adobe_imageDevelopSettings
-# 				SET text=:cropEd , croppedWidth=:cropWidth, croppedHeight=:cropHeight 
-# 				WHERE id_local =:devId"""
-# 		db.execute(query,{"devId": devid, "cropEd": cropStr, "cropWidth":cr[CROP_WIDTH], "cropHeight":cr[CROP_HEIGHT]})
-		#print "CROP UPDATED " + str(devid)
+
 
 		
 
