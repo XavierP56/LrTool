@@ -26,11 +26,10 @@ def Raw2Jpg (vpict):
 	f.write(image)
 	f.close()
 
-def rotateImage(image, angle):
-  image_center = ((image.shape[1]-1)/2, (image.shape[1]-1)/2)
-  rot_mat = cv2.getRotationMatrix2D(image_center,angle,1.0)
-  result = cv2.warpAffine(image, rot_mat, image.shape,flags=cv2.INTER_LINEAR)
-  return result
+def rotateImage(image,angle):
+	dst = cv2.transpose(image)
+	res = cv2.flip(dst,0)
+	return res
  	
 def findeyes(img):
 	eyeCascade = cv2.CascadeClassifier("/usr/local/share/OpenCV/haarcascades/haarcascade_eye.xml")
@@ -43,15 +42,17 @@ def recog(vpict):
 	Raw2Jpg(vpict)
 	# Make a small version in color.
 	color = cv2.imread('/tmp/lr.jpg')
-	colors = cv2.resize(color,(640,480))
-	#if (vpict['orientation'] == 'DA'):
-	#	colors = rotateImage(colors, 90)
+	width = color.shape[1]
+	height = color.shape[0]
+	sz = (width / scale, height / scale)
+	colors = cv2.resize(color,sz)
+	if (vpict['orientation'] == 'DA'):
+		colors = rotateImage(colors, 90)
 	colorspath = 'img/color_' + str(uuid.uuid4()) + '.jpg'
 	cv2.imwrite('Files/'+colorspath, colors)
 	
 	imgf = cv2.imread('/tmp/lr.jpg',cv2.IMREAD_GRAYSCALE)
-	width = imgf.shape[1]
-	height = imgf.shape[0]
+
 	sz = (width / scale, height / scale)
 	img = cv2.resize(imgf,sz)
  	if (vpict['orientation'] == 'DA'):
