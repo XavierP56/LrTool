@@ -39,6 +39,11 @@
           return scope.curPrg = v;
         });
       },
+      controller: function($scope) {
+        return $scope.toggleList = function() {
+          return $scope.showList = !$scope.showList;
+        };
+      },
       templateUrl: '/demo/progress.html'
     };
   });
@@ -156,7 +161,9 @@
         $scope.colors = res.colorpath;
         if (res.detect.length === 0) {
           errors.push(vpict.fullName);
-          $scope.ProcessAgain();
+          if ($scope.imgList.length > 0) {
+            $scope.ProcessAgain();
+          }
         }
         if (res.detect.length > 0) {
           AskInfo.SendPicture(res);

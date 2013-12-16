@@ -18,6 +18,9 @@ app.directive 'progressIndicator', ->
   link : (scope) ->
     scope.$watch 'progress', (v)->
       scope.curPrg = v
+  controller: ($scope) ->
+    $scope.toggleList = () ->
+      $scope.showList = !$scope.showList
   templateUrl : '/demo/progress.html'
 
 # Progress service.
@@ -101,7 +104,7 @@ app.factory 'AskInfo', ($rootScope) ->
       $scope.colors = res.colorpath
       if res.detect.length == 0
         errors.push(vpict.fullName)
-        $scope.ProcessAgain()
+        $scope.ProcessAgain() if $scope.imgList.length > 0
       AskInfo.SendPicture(res) if res.detect.length > 0
       $scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
 
