@@ -67,8 +67,13 @@ def Identify (image):
     global model
     global identities
     
-    try:
-        imageSz = cv2.resize(image,(IMAGE_SIZE,IMAGE_SIZE))
+    try: 
+        if (len(image.shape) ==3):
+            grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            grey = image
+        
+        imageSz = cv2.resize(grey,(IMAGE_SIZE,IMAGE_SIZE))
         [pid, pconfidence] = model.predict(imageSz)
         print pid
         name = identities[pid]
