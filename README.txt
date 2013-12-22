@@ -71,7 +71,7 @@ bower install
 cd ..
 
 You should be ready now !
-python lrtool.py https://github.com/XavierP56/LrTool.git
+python lrtool.py <full path to a .lrcat file from Lightroom>
 Open a browser at:
 http://localhost:8080/demo/index.html
 
