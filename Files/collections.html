@@ -1,18 +1,21 @@
-<div>
-	Put your images into a collection.
-	<br/>
-	In Lightroom, create a Faces keyword. <br/>
-    Create all names you want to recognize as children of Faces keyword.
-	<br><br/>
-	<b>USE AT YOUR OWN RISK. IT CAN CORRUPT THE DATABASE, WORK WITH A BACKUP !</b>
-	<br/><br/>
+Put your images into a collection.
+<br/>
+In Lightroom, create a Faces keyword. <br/>
+Create all names you want to recognize as children of Faces keyword.
+<br><br/>
+<b>USE AT YOUR OWN RISK. IT CAN CORRUPT THE DATABASE, WORK WITH A BACKUP !</b>
+<br/><br/>
+
+<div class="lrback">
+    <div class="leftpos">
 	<label>Select a collection</label> 
 	<select ng-disabled="isWorking()" ng-model="collection" ng-options="c.name for c in collections" ng-change="Process(collection.id)"></select>
   	<br/><br/>
   	<progress-indicator progress=currentProgress></progress-indicator>
   	<img src="{{colors}}"/>
+    </div>
 
-  	<div ng-controller="NameCtrl" ng-show="showMe">
+  	<div ng-controller="NameCtrl" ng-show="showMe" class="rightpos">
   		<br/>
   		Who is it ?
   		<br/>

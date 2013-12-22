@@ -1,7 +1,49 @@
-li
+li.menuli
 {
 display:inline;
+margin:10px;
 }
+
+a
+{
+    color : white;
+    font-size: 32px;
+}
+
 tr:not(:first-child):hover {
     background-color: rgba(255,0,0,.3);
+}
+
+body
+{
+    background-color: black;
+    color: darkgrey;
+}
+
+div.lrback
+{
+    background-color: darkgray;
+    color: white;
+    height:100%;
+    overflow: hidden;
+}
+
+div.leftpos
+{
+    float:left;
+    background-color: darkgray;
+    width:80%;
+}
+
+div.rightpos
+{
+    float:right;
+    background-color: darkgrey;
+    width:20%;
+}
+
+div.chart
+{
+    width:100%;
+    height:600px;
 }

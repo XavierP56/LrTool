@@ -30,7 +30,6 @@ def returnChart (graph, rows, totalCount, rangeCount):
 	r =  {
 	"type": graph,
 	"displayed": True,
-	  "cssStyle": "height:600px; width:100%;",
 	  "data": {
 		"cols": [
 		  {
@@ -51,7 +50,8 @@ def returnChart (graph, rows, totalCount, rangeCount):
 		"is3D" : True,
 		"isStacked": "true",
 		"fill": 20,
-		"displayExactValues": True
+		"displayExactValues": True,
+		"backgroundColor" : "darkgrey"
 	  },
 	  "formatters": {},
 	  "totalCount" : totalCount,
