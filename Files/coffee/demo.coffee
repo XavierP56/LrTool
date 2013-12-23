@@ -14,13 +14,18 @@ app.config ($stateProvider) ->
 # Directive
 app.directive 'progressIndicator', ->
   restrict : 'E'
-  scope : { progress : '=' }
+  scope : { progress : '=', collection:'=' }
   link : (scope) ->
     scope.$watch 'progress', (v)->
       scope.curPrg = v
-  controller: ($scope) ->
+  controller: ($scope, $resource) ->
+    Undetected = $resource('/collections/undetected',{},{do:{method:'POST'}})
+
     $scope.toggleList = () ->
       $scope.showList = !$scope.showList
+    $scope.generate = (collection) ->
+      Undetected.do  {'errors':$scope.curPrg.errors, 'col':collection}, ->
+        alert ("Added into collection !")
   templateUrl : '/demo/progress.html'
 
 # Progress service.
@@ -89,6 +94,7 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.collections = colls.colls
 
   $scope.Process = (id) ->
+    $scope.$broadcast('hideMe')
     images = Images.get {colId:id}, ->
       $scope.imgList = images.imgs
       index = 0
@@ -103,7 +109,7 @@ app.factory 'AskInfo', ($rootScope) ->
     res = Process.do {'img':vpict}, ->
       $scope.colors = res.colorpath
       if res.detect.length == 0
-        errors.push(vpict.fullName)
+        errors.push({'path':vpict.fullName, 'id': vpict.id_local})
         $scope.ProcessAgain() if $scope.imgList.length > 0
       AskInfo.SendPicture(res) if res.detect.length > 0
       $scope.currentProgress = {'text':'Done', 'end':true, 'errors':errors} if $scope.imgList.length == 0
@@ -163,3 +169,6 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.id_img = faces.id_img
     $scope.FaceList = faces.detect
     $scope.ProcessAgain()
+
+  $scope.$on 'hideMe', ->
+    $scope.showMe = false

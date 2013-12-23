@@ -13,6 +13,7 @@ import random
 import train
 import tags
 import argparse
+import collection
 
 app = bottle.Bottle()
 progress_queue = None
@@ -165,6 +166,12 @@ def Finish(db):
 	print 'Finish. Purge temp dir'
 	face.finish()
 
+@app.route('/collections/undetected', method='POST')
+def Undetected(db):
+	col = request.json['col']
+	errors = request.json['errors']
+	collection.MoveUndetect (db, col, errors)
+	
 parser = argparse.ArgumentParser()
 parser.add_argument("dbpath",help="Path to .lrcat database")
 args = parser.parse_args()

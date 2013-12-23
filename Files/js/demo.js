@@ -32,16 +32,31 @@
     return {
       restrict: 'E',
       scope: {
-        progress: '='
+        progress: '=',
+        collection: '='
       },
       link: function(scope) {
         return scope.$watch('progress', function(v) {
           return scope.curPrg = v;
         });
       },
-      controller: function($scope) {
-        return $scope.toggleList = function() {
+      controller: function($scope, $resource) {
+        var Undetected;
+        Undetected = $resource('/collections/undetected', {}, {
+          "do": {
+            method: 'POST'
+          }
+        });
+        $scope.toggleList = function() {
           return $scope.showList = !$scope.showList;
+        };
+        return $scope.generate = function(collection) {
+          return Undetected["do"]({
+            'errors': $scope.curPrg.errors,
+            'col': collection
+          }, function() {
+            return alert("Added into collection !");
+          });
         };
       },
       templateUrl: '/demo/progress.html'
@@ -134,6 +149,7 @@
     });
     $scope.Process = function(id) {
       var images;
+      $scope.$broadcast('hideMe');
       return images = Images.get({
         colId: id
       }, function() {
@@ -160,7 +176,10 @@
       }, function() {
         $scope.colors = res.colorpath;
         if (res.detect.length === 0) {
-          errors.push(vpict.fullName);
+          errors.push({
+            'path': vpict.fullName,
+            'id': vpict.id_local
+          });
           if ($scope.imgList.length > 0) {
             $scope.ProcessAgain();
           }
@@ -260,10 +279,13 @@
       });
       return $scope.name = obj[0];
     };
-    return $scope.$on('askInfo', function(sender, faces) {
+    $scope.$on('askInfo', function(sender, faces) {
       $scope.id_img = faces.id_img;
       $scope.FaceList = faces.detect;
       return $scope.ProcessAgain();
+    });
+    return $scope.$on('hideMe', function() {
+      return $scope.showMe = false;
     });
   };
 
