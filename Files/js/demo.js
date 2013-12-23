@@ -250,10 +250,10 @@
       return $scope.MoveNext();
     };
     $scope.Label = function() {
-      if ($scope.name.name !== $scope.guess) {
+      if (($scope.name.name !== $scope.guess) || ($scope.curHead.confid < 50)) {
         $scope.AddTrain();
       }
-      if ($scope.name.name === $scope.guess) {
+      if (($scope.name.name === $scope.guess) && ($scope.curHead.confid >= 50)) {
         return $scope.AddTag();
       }
     };
@@ -266,12 +266,13 @@
       cface = $scope.FaceList.shift();
       headpict = cface.headPict;
       headname = cface.name;
-      $scope.guess = headname;
       imgSrc = cface.headPath;
+      $scope.guess = headname;
       $scope.curHead = {
         'id_img': $scope.id_img,
         'name': headname,
-        'cropHead': headpict
+        'cropHead': headpict,
+        'confid': cface.confid
       };
       $scope.imgSrc = imgSrc;
       obj = $scope.names.filter(function(x) {

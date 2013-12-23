@@ -146,8 +146,8 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.MoveNext()
 
   $scope.Label = () ->
-    $scope.AddTrain() if $scope.name.name != $scope.guess
-    $scope.AddTag() if $scope.name.name == $scope.guess
+    $scope.AddTrain() if ($scope.name.name != $scope.guess) or ($scope.curHead.confid < 50)
+    $scope.AddTag() if ($scope.name.name == $scope.guess) and  ($scope.curHead.confid >= 50)
 
   $scope.SetName = (name) ->
     $scope.curHead.name = name
@@ -158,9 +158,9 @@ app.factory 'AskInfo', ($rootScope) ->
     # Process the current face.
     headpict = cface.headPict
     headname = cface.name
-    $scope.guess = headname
     imgSrc = cface.headPath
-    $scope.curHead = { 'id_img' : $scope.id_img, 'name' : headname, 'cropHead' : headpict}
+    $scope.guess = headname
+    $scope.curHead = { 'id_img' : $scope.id_img, 'name' : headname, 'cropHead' : headpict, 'confid':cface.confid}
     $scope.imgSrc = imgSrc
     obj = $scope.names.filter (x) -> x.name == headname
     $scope.name = obj[0]

@@ -90,7 +90,12 @@ def recog(vpict):
 		cv2.imwrite(fname,imgCrop)
 		found += 1
 		myname, confid = train.Identify(imgCrop)
-		face = { "name": myname, "headPict":fname, "headPath":htmlpath}
+		# Try to make it a percentage...
+		confid = int(confid)
+		if (confid > 100):
+			confid = 100
+		confid = 100 - confid
+		face = { "name": myname, "headPict":fname, "headPath":htmlpath, "confid":confid}
 		faces.append(face)
 
 	result = {"id_img":vpict['id_local'], "colorpath":colorspath, "detect":faces}

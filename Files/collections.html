@@ -24,6 +24,8 @@ Create all names you want to recognize as children of Faces keyword.
         <select ng-model="name" ng-options="c.name for c in names" ng-change="SetName(name.name)"></select>
   		<button ng-click="Skip()">Skip</button>
   		<button ng-click="Label()">Tag</button>
+        <br/>
+        <label>Trust: {{curHead.confid}} %</label>
   	</div>
 </div>
 
