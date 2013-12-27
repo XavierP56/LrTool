@@ -1,13 +1,13 @@
-In progress: <b>{{curPrg.text}}</b> 
-<div class="ng-hide" ng-hide=curPrg.end>
-<progress  value={{curPrg.index}} max={{curPrg.maxi}}></progress>
+In progress: <b>{{progress.text}}</b>
+<div class="ng-hide" ng-hide=progress.end>
+<progress  value={{progress.index}} max={{progress.maxi}}></progress>
 </div> 
 <br/>
-<button ng-click="toggleList(showList)">Number of errors:{{curPrg.errors.length}}</button>
+<button ng-click="toggleList(showList)">Number of errors:{{progress.errors.length}}</button>
 <br/>
 <div ng-show="showList">
-    <li ng-repeat="e in curPrg.errors">
+    <li ng-repeat="e in progress.errors">
         No faces found on <b>{{e.path}}</b> <br/>
     </li>
-    <button ng-show="curPrg.errors.length >0" ng-click="generate(collection)">Generate a collection {{collection.name}}-noface</button>
+    <button ng-show="progress.errors.length >0" ng-click="generate(collection)">Generate a collection {{collection.name}}-noface</button>
 </div>

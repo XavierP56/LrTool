@@ -83,6 +83,7 @@ def recog(vpict):
 		if (ConfirmHead(imgCrop) == False):
 			imgCrop = None
 			continue
+		imgCrop = cv2.resize(imgCrop, (100,100))
 		# We can safely assume it is an head for this image.
 		basepath = 'img/head_' + str(uuid.uuid4()) + '.jpg'
 		fname = 'Files/' + basepath

@@ -25,8 +25,7 @@ Create all names you want to recognize as children of Faces keyword.
   		<button ng-click="Skip()">Skip</button>
   		<button ng-click="Label()">Tag</button>
         <br/>
-        <label>Trust: {{curHead.confid}} %</label>
+        <span style="color: {{curHead.confid > 50 && 'green' || 'white'}}; ">Trust: {{curHead.confid}} %</span>
   	</div>
 </div>
-
 

@@ -35,11 +35,6 @@
         progress: '=',
         collection: '='
       },
-      link: function(scope) {
-        return scope.$watch('progress', function(v) {
-          return scope.curPrg = v;
-        });
-      },
       controller: function($scope, $resource) {
         var Undetected;
         Undetected = $resource('/collections/undetected', {}, {
@@ -52,7 +47,7 @@
         };
         return $scope.generate = function(collection) {
           return Undetected["do"]({
-            'errors': $scope.curPrg.errors,
+            'errors': $scope.progress.errors,
             'col': collection
           }, function() {
             return alert("Added into collection !");

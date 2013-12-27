@@ -15,16 +15,16 @@ app.config ($stateProvider) ->
 app.directive 'progressIndicator', ->
   restrict : 'E'
   scope : { progress : '=', collection:'=' }
-  link : (scope) ->
-    scope.$watch 'progress', (v)->
-      scope.curPrg = v
+  #link : (scope) ->
+  #  scope.$watch 'progress', (v)->
+  #    scope.curPrg = v
   controller: ($scope, $resource) ->
     Undetected = $resource('/collections/undetected',{},{do:{method:'POST'}})
 
     $scope.toggleList = () ->
       $scope.showList = !$scope.showList
     $scope.generate = (collection) ->
-      Undetected.do  {'errors':$scope.curPrg.errors, 'col':collection}, ->
+      Undetected.do  {'errors':$scope.progress.errors, 'col':collection}, ->
         alert ("Added into collection !")
   templateUrl : '/demo/progress.html'
 
