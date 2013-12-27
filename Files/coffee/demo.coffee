@@ -164,6 +164,8 @@ app.factory 'AskInfo', ($rootScope) ->
     $scope.imgSrc = imgSrc
     obj = $scope.names.filter (x) -> x.name == headname
     $scope.name = obj[0]
+    if (($scope.autoNext == true) and (cface.confid > 80))
+      $scope.Label()
 
   $scope.$on 'askInfo', (sender, faces) ->
     $scope.id_img = faces.id_img

@@ -273,7 +273,10 @@
       obj = $scope.names.filter(function(x) {
         return x.name === headname;
       });
-      return $scope.name = obj[0];
+      $scope.name = obj[0];
+      if (($scope.autoNext === true) && (cface.confid > 80)) {
+        return $scope.Label();
+      }
     };
     $scope.$on('askInfo', function(sender, faces) {
       $scope.id_img = faces.id_img;
