@@ -4,12 +4,12 @@
 app = angular.module 'myApp', ['ngResource','googlechart','ui.router']
 
 app.config ($stateProvider) ->
-  home = {name:"home", url: "/Intro", templateUrl: "/demo/intro.html"}
-  list = {name:"list", url: "/Focales", templateUrl: "/demo/focals.html", controller: FocalCtrl}
-  col = {name:"collection",url: "/Collections",templateUrl: "/demo/collections.html",controller: CollectionCtrl}
-  $stateProvider.state home
-  $stateProvider.state list
-  $stateProvider.state col
+  home = {url: "/Intro", templateUrl: "/demo/intro.html"}
+  list = {url: "/Focales", templateUrl: "/demo/focals.html", controller: FocalCtrl}
+  col =  {url: "/Collections",templateUrl: "/demo/collections.html",controller: CollectionCtrl}
+  $stateProvider.state('intro', home)
+  $stateProvider.state('focales',list)
+  $stateProvider.state('collections', col)
 
 # Directive
 app.directive 'progressIndicator', ->

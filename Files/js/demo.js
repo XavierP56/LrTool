@@ -7,25 +7,22 @@
   app.config(function($stateProvider) {
     var col, home, list;
     home = {
-      name: "home",
       url: "/Intro",
       templateUrl: "/demo/intro.html"
     };
     list = {
-      name: "list",
       url: "/Focales",
       templateUrl: "/demo/focals.html",
       controller: FocalCtrl
     };
     col = {
-      name: "collection",
       url: "/Collections",
       templateUrl: "/demo/collections.html",
       controller: CollectionCtrl
     };
-    $stateProvider.state(home);
-    $stateProvider.state(list);
-    return $stateProvider.state(col);
+    $stateProvider.state('intro', home);
+    $stateProvider.state('focales', list);
+    return $stateProvider.state('collections', col);
   });
 
   app.directive('progressIndicator', function() {
